@@ -1,4 +1,9 @@
 package main.java.domainModel.Tags;
 
-public class TagZone {
+public class TagZone extends Tag{
+
+    public TagZone(String zone) {
+        this.tag = zone;
+        this.typeOfTag = "zone";
+    }
 }

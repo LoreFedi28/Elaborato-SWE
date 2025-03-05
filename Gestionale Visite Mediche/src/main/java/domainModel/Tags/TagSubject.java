@@ -1,4 +1,9 @@
 package main.java.domainModel.Tags;
 
-public class TagSubject {
+public class TagSubject extends Tag {
+
+    public TagSubject(String subject) {
+        this.tag = subject;
+        this.typeOfTag = "subject";
+    }
 }
