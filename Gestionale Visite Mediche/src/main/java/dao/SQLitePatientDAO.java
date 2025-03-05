@@ -71,7 +71,7 @@ public class SQLitePatientDAO implements PatientDAO {
         Connection conn = Database.getConnection();
         PreparedStatement ps = conn.prepareStatement("DELETE FROM patients WHERE cf = ?");
         ps.setString(1, CF);
-        into rows = ps.executeUpdate();
+        int rows = ps.executeUpdate();
         ps.close();
         Database.closeConnection(conn);
         return rows > 0;
