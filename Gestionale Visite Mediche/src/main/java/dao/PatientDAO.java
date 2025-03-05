@@ -1,4 +1,6 @@
 package main.java.dao;
 
-public class PatientDAO {
+import domainModel.Patient;
+
+public interface PatientDAO extends DAO<Patient, String> {
 }
