@@ -1,7 +1,8 @@
 package main.java.domainModel;
 
+import domainModel.State.*;
+import domainModel.Tags.Tag;
 
-import javax.swing.text.html.HTML;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDateTime;
