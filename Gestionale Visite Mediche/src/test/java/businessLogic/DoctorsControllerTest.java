@@ -1,24 +1,23 @@
-SQLiteLessonDAOTest
-        SQLiteStudentDAOTest
-        SQLiteTagDAOTest
-        SQLiteTutorDAOTestpackage test.java.businessLogic;
+package test.java.businessLogic;
 
 import dao.Database;
-import dao.SQLiteTutorDAO;
-import dao.TutorDAO;
-import domainModel.Tutor;
+import dao.SQLiteDoctorDAO;
+import dao.DoctorDAO;
+import domainModel.Doctor;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.io.IOException;
-import java.sql.Connection;
+import java.sql.*;
 import java.sql.SQLException;
 
 class DoctorsControllerTest {
-    private TutorsController tutorsController;
-    private Tutor testTutor;
+    private DoctorsController doctorsController;
+    private Doctor testDoctor;
 
     @BeforeAll
     static void initDb() throws SQLException, IOException {
@@ -32,20 +31,18 @@ class DoctorsControllerTest {
         Database.initDatabase();
         resetDatabase();
 
-        // Crea TutorDAO e controller per tutor
-        TutorDAO tutorDAO = new SQLiteTutorDAO();
-        tutorsController = new TutorsController(tutorDAO);
+        DoctorDAO doctorDAO = new SQLiteDoctorDAO();
+        doctorsController = new DoctorsController(doctorDAO);
 
-        // Crea dati di test (inserisce un tutor)
-        testTutor = new Tutor("TUTORCF123", "TutorName", "TutorSurname", "TutorLevel");
-        tutorDAO.insert(testTutor);
+        testDoctor = new Doctor("DOCTORCF123", "DoctorName", "DoctorSurname", "DoctorLevel");
+        doctorDAO.insert(testDoctor);
     }
 
     private void resetDatabase() throws SQLException {
         Connection connection = Database.getConnection();
 
         // Cancella dati da tutte le tabelle
-        connection.prepareStatement("DELETE FROM tutors").executeUpdate(); // Aggiungi altre tabelle se necessario
+        connection.prepareStatement("DELETE FROM doctors").executeUpdate(); // Aggiungi altre tabelle se necessario
 
         // Reimposta i contatori di autoincremento
         connection.prepareStatement("DELETE FROM sqlite_sequence").executeUpdate();
@@ -54,42 +51,42 @@ class DoctorsControllerTest {
 
 
     @Test
-    public void when_AddingNewTutor_Expect_Success() throws Exception {
-        Assertions.assertDoesNotThrow(() -> tutorsController.addPerson("TUTORCF456", "NewTutorName", "NewTutorSurname", "NewTutorLevel"));
-        Tutor addedTutor = tutorsController.getPerson("TUTORCF456");
-        Assertions.assertEquals("TUTORCF456", addedTutor.getCF());
+    public void when_AddingNewDoctor_Expect_Success() throws Exception {
+        Assertions.assertDoesNotThrow(() -> doctorsController.addPerson("DOCTORCF456", "NewDoctorName", "NewDoctorSurname", "NewDoctorLevel"));
+        Doctor addedDoctor = doctorsController.getPerson("DOCTORCF456");
+        Assertions.assertEquals("DOCTORCF456", addedDoctor.getCF());
     }
 
     @Test
-    public void when_AddingAlreadyExistingTutor_Expect_Exception() {
+    public void when_AddingAlreadyExistingDoctor_Expect_Exception() {
         Assertions.assertThrows(
                 Exception.class,
-                () -> tutorsController.addPerson("TUTORCF123", "DuplicateTutorName", "DuplicateTutorSurname", "DuplicateTutorLevel"),
+                () -> doctorsController.addPerson("DOCTORCF123", "DuplicateDoctorName", "DuplicateDoctorSurname", "DuplicateDoctorLevel"),
                 "Expected addPerson() to throw, but it didn't"
         );
     }
 
     @Test
-    public void when_GettingExistingTutor_Expect_ReturnTutor() throws Exception {
-        Tutor retrievedTutor = tutorsController.getPerson("TUTORCF123");
-        Assertions.assertEquals(testTutor, retrievedTutor);
+    public void when_GettingExistingDoctor_Expect_ReturnDoctor() throws Exception {
+        Doctor retrievedDoctor = doctorsController.getPerson("DOCTORCF123");
+        Assertions.assertEquals(testDoctor, retrievedDoctor);
     }
 
     @Test
-    public void when_GettingNonExistingTutor_Expect_ReturnNull() throws Exception {
-        Tutor nonExistingTutor = tutorsController.getPerson("TUTORCF999");
-        Assertions.assertNull(nonExistingTutor);
+    public void when_GettingNonExistingDoctor_Expect_ReturnNull() throws Exception {
+        Doctor nonExistingDoctor = doctorsController.getPerson("DOCTORCF999");
+        Assertions.assertNull(nonExistingDoctor);
     }
 
     @Test
-    public void when_RemovingExistingTutor_Expect_True() throws Exception {
-        boolean removed = tutorsController.removePerson("TUTORCF123");
+    public void when_RemovingExistingDoctor_Expect_True() throws Exception {
+        boolean removed = doctorsController.removePerson("DOCTORCF123");
         Assertions.assertTrue(removed);
     }
 
     @Test
-    public void when_RemovingNonExistingTutor_Expect_False() throws Exception {
-        boolean removed = tutorsController.removePerson("TUTORCF999");
+    public void when_RemovingNonExistingDoctor_Expect_False() throws Exception {
+        boolean removed = doctorsController.removePerson("DOCTORCF999");
         Assertions.assertFalse(removed);
     }
 }
