@@ -1,9 +1,6 @@
 package dao;
 
-import domainModel.Tags.Tag;
-import domainModel.Tags.TagIsOnline;
-import domainModel.Tags.TagSubject;
-import domainModel.Tags.TagZone;
+import domainModel.Tags.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -119,7 +116,7 @@ public class SQLiteTagDAO implements TagDAO{
         Connection conn = Database.getConnection();
         PreparedStatement ps = conn.prepareStatement("DELETE FROM tags WHERE tag = ? AND tagType = ?");
         ps.setString(1, tagToRemove.getTag());
-        ps.setString(2, tagToremove.getTypeOfTag());
+        ps.setString(2, tagToRemove.getTypeOfTag());
         int rows = ps.executeUpdate();
         ps.close();
         Database.closeConnection(conn);
@@ -152,7 +149,7 @@ public class SQLiteTagDAO implements TagDAO{
                 tags.add(tio);
             }
             else if(Objects.equals(rs.getString("tagType"), "Level")){
-                TagLevel tl = new TagLevel(rs.getString(tag));
+                TagLevel tl = new TagLevel(rs.getString("tag"));
                 tags.add(tl);
             }
             else if (Objects.equals(rs.getString("tagType"), "Subject")){

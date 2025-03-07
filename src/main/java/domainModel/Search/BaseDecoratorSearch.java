@@ -1,7 +1,5 @@
 package domainModel.Search;
 
-import dao.VisitDAO;
-
 public abstract class BaseDecoratorSearch implements Search{
 
     private Search decoratedSearch;

@@ -3,9 +3,6 @@ package dao;
 import domainModel.Visit;
 import domainModel.State.*;
 import domainModel.Tags.*;
-import domainModel.State.Available;
-import domainModel.State.Booked;
-import domainModel.State.Cancelled;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -26,13 +23,11 @@ public class SQLiteVisitDAO implements VisitDAO {
             String a = rs.getString("stateExtraInfo");
             Booked booked = new Booked(a);
             visit.setState(booked);
-        }
-        else if(Objects.equals(rs.getString("state"), "Cancelled")){
+        } else if(Objects.equals(rs.getString("state"), "Cancelled")){
             LocalDateTime ldt = LocalDateTime.parse(rs.getString("stateExtraInfo"));
             Cancelled cancelled = new Cancelled(ldt);
             visit.setState(cancelled);
-        }
-        else{
+        } else{
             Available available = new Available();
             visit.setState(available);
         }
@@ -122,7 +117,7 @@ public class SQLiteVisitDAO implements VisitDAO {
 
     @Override
     public boolean delete(Integer idVisit) throws Exception{
-        Visit visit = getIdVisit();
+        Visit visit = get(idVisit);
         if(visit == null){
             return false;
         }

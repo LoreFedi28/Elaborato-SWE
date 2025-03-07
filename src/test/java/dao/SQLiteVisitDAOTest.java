@@ -1,7 +1,7 @@
-package test.java.dao;
+package java.dao;
 
 
-import domainModel.Lesson;
+import domainModel.Visit;
 import domainModel.State.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -115,12 +115,12 @@ class SQLiteVisitDAOTest {
     }
 
     @Test
-    void testGetStudentBookedLessons() throws Exception {
-        // Test the method to get lessons booked by a student
-        List<Lesson> lessons = lessonDAO.getStudentBookedLessons("student1");
-        Assertions.assertEquals(1, lessons.size());
-        Assertions.assertEquals("Physics Lesson", lessons.get(0).getTitle());
-        Assertions.assertEquals("Booked", lessons.get(0).getState());
+    void testGetStudentBookedVisits() throws Exception {
+        // Test the method to get visits booked by a patient
+        List<Visit> visits = visitDAO.getPatientBookedVisits"patient1");
+        Assertions.assertEquals(1, visits.size());
+        Assertions.assertEquals("Physics Lesson", visits.get(0).getTitle());
+        Assertions.assertEquals("Booked", visits.get(0).getState());
     }
 }
 

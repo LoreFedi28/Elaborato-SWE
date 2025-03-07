@@ -8,7 +8,6 @@ import domainModel.State.*;
 import domainModel.Tags.*;
 import domainModel.Doctor;
 
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -69,7 +68,7 @@ public class VisitsController {
     }
 
     public List<Visit> getDoctorVisitByState(String doctorCF, State state) throws Exception {
-        return visitDAO.getDoctorVisitssByState(doctorCF, state);
+        return visitDAO.getDoctorVisitsByState(doctorCF, state);
     }
 
     public void attachTag(int idVisit, Tag tagToAttach) throws Exception {

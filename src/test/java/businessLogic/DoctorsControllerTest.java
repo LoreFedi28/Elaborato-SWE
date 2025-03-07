@@ -1,5 +1,6 @@
-package test.java.businessLogic;
+package java.businessLogic;
 
+import businessLogic.DoctorsController;
 import dao.Database;
 import dao.SQLiteDoctorDAO;
 import dao.DoctorDAO;
@@ -10,7 +11,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.io.IOException;
 import java.sql.*;
 import java.sql.SQLException;

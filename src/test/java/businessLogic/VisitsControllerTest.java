@@ -1,5 +1,8 @@
-package test.java.businessLogic;
+package java.businessLogic;
 
+import businessLogic.DoctorsController;
+import businessLogic.TagsController;
+import businessLogic.VisitsController;
 import dao.*;
 import domainModel.Visit;
 import domainModel.State.*;
@@ -31,7 +34,7 @@ class VisitsControllerTest {
         Database.initDatabase();
         tagDAO = new SQLiteTagDAO();
         visitDAO = new SQLiteVisitDAO(tagDAO);
-        visitsController = new VisitsController(visitDAO, tagDAO, new VisitsController(new SQLiteDoctorDAO()));
+        visitsController = new VisitsController(visitDAO, tagDAO, new DoctorsController(new SQLiteDoctorDAO()));
         tagsController = new TagsController(tagDAO);
     }
 
@@ -134,7 +137,7 @@ class VisitsControllerTest {
 
     @Test
     void testGetStudentBookedVisits() throws Exception {
-        List<Visit> visits = visitDAO.getStudentBookedVisits("patient1");
+        List<Visit> visits = visitDAO.getPatientBookedVisits("patient1");
         assertEquals(1, visits.size());
         assertEquals("Physics Visit", visits.get(0).getTitle());
         assertEquals("Booked", visits.get(0).getState());

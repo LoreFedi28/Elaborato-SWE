@@ -1,6 +1,6 @@
-package test.java.dao;
+package java.dao;
 
-import domainModel.Lesson;
+import domainModel.Visit;
 import domainModel.Tags.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -65,16 +65,16 @@ public class SQLiteTagDAOTest {
 
     @Test
     void testAttachTag() throws Exception {
-        // Test attaching a tag to a lesson
-        LessonDAO lessonDAO = new SQLiteLessonDAO(new SQLiteTagDAO());
-        Lesson lesson = new Lesson(1, "Math Class", "Learn math", LocalDateTime.now(), LocalDateTime.now().plusHours(1), 50.0, "Tutor123");
-        lessonDAO.insert(lesson);
+        // Test attaching a tag to a visit
+        VisitDAO visitDAO = new SQLiteVisitDAO(new SQLiteTagDAO());
+        Visit visit = new Visit(1, "Math Class", "Learn math", LocalDateTime.now(), LocalDateTime.now().plusHours(1), 50.0, "Tutor123");
+        visitDAO.insert(visit);
 
         Tag tag = new TagSubject("Math");
-        tagDAO.attachTag(lesson.getIdLesson(), tag);
+        tagDAO.attachTag(visit.getIdVisit(), tag);
 
-        List<Tag> lessonTags = tagDAO.getTagsByLesson(lesson.getIdLesson());
-        Assertions.assertEquals(1, lessonTags.size());
+        List<Tag> visitTags = tagDAO.getTagsByVisit(visit.getIdVisit());
+        Assertions.assertEquals(1, visitTags.size());
     }
 
     @Test
@@ -92,34 +92,34 @@ public class SQLiteTagDAOTest {
 
     @Test
     void testDetachTag() throws Exception {
-        // Test detaching a tag from a lesson
-        LessonDAO lessonDAO = new SQLiteLessonDAO(new SQLiteTagDAO());
-        Lesson lesson = new Lesson(1, "English Class", "Learn English", LocalDateTime.now(), LocalDateTime.now().plusHours(1), 40.0, "Tutor456");
-        lessonDAO.insert(lesson);
+        // Test detaching a tag from a visit
+        VisitDAO visitDAO = new SQLiteVisitDAO(new SQLiteTagDAO());
+        Visit visit = new Visit(1, "English Class", "Learn English", LocalDateTime.now(), LocalDateTime.now().plusHours(1), 40.0, "Tutor456");
+        visitDAO.insert(visit);
 
         Tag tag = new TagLevel("Advanced");
-        tagDAO.attachTag(lesson.getIdLesson(), tag);
+        tagDAO.attachTag(visit.getIdVisit(), tag);
 
-        boolean detached = tagDAO.detachTag(lesson.getIdLesson(), tag);
+        boolean detached = tagDAO.detachTag(visit.getIdLesson(), tag);
         Assertions.assertTrue(detached);
 
-        List<Tag> lessonTags = tagDAO.getTagsByLesson(lesson.getIdLesson());
-        Assertions.assertEquals(0, lessonTags.size());
+        List<Tag> visitTags = tagDAO.getTagsByVisit(visit.getIdVisit());
+        Assertions.assertEquals(0, visitTags.size());
     }
 
     @Test
-    void testGetTagsByLesson() throws Exception {
-        // Test retrieving tags associated with a lesson
-        LessonDAO lessonDAO = new SQLiteLessonDAO(new SQLiteTagDAO());
-        Lesson lesson = new Lesson(4, "Science Class", "Learn science", LocalDateTime.now(), LocalDateTime.now().plusHours(1), 60.0, "Tutor789");
-        lessonDAO.insert(lesson);
+    void testGetTagsByVisit() throws Exception {
+        // Test retrieving tags associated with a visit
+        VisitDAO visitDAO = new SQLiteVisitDAO(new SQLiteTagDAO());
+        Visit visit = new Visit(4, "Science Class", "Learn science", LocalDateTime.now(), LocalDateTime.now().plusHours(1), 60.0, "Tutor789");
+        visitDAO.insert(visit);
 
         Tag tag1 = new TagSubject("Physics");
         Tag tag2 = new TagIsOnline("True");
-        tagDAO.attachTag(lesson.getIdLesson(), tag1);
-        tagDAO.attachTag(lesson.getIdLesson(), tag2);
+        tagDAO.attachTag(visit.getIdVisit(), tag1);
+        tagDAO.attachTag(visit.getIdVisit(), tag2);
 
-        List<Tag> lessonTags = tagDAO.getTagsByLesson(lesson.getIdLesson());
-        Assertions.assertEquals(2, lessonTags.size());
+        List<Tag> visitTags = tagDAO.getTagsByVisit(visit.getIdVisit());
+        Assertions.assertEquals(2, visitTags.size());
     }
 }

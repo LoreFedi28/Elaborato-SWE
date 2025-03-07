@@ -1,11 +1,5 @@
 package domainModel.Search;
 
-import dao.VisitDAO;
-import domainModel.Visit;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class SearchConcrete implements Search {
 
     private final String query;

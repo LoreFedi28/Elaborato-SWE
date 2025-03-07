@@ -5,9 +5,9 @@ import domainModel.State.State;
 
 import java.util.List;
 
-public interface VisitDAO extends DAO <Visit, Integer>{
+public interface VisitDAO extends DAO <Visit, Integer> {
 
-    public int getNextVisitId() throws Exception;
+    public int getNextVisitID() throws Exception;
 
     public List<Visit> getDoctorVisitsByState(String dCF, State state) throws Exception;
 

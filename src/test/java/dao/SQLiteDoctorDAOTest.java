@@ -1,6 +1,6 @@
-package test.java.dao;
+package java.dao;
 
-import domainModel.Tutor;
+import domainModel.Doctor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 class SQLiteDoctorDAOTest {
-    private SQLiteTutorDAO tutorDAO;
+    private SQLiteDoctorDAO doctor;
 
     @BeforeAll
     static void initDb() throws SQLException, IOException {
@@ -24,68 +24,68 @@ class SQLiteDoctorDAOTest {
     @BeforeEach
     public void init() throws SQLException {
         Connection connection = Database.getConnection();
-        tutorDAO = new SQLiteTutorDAO();
+        doctorDAO = new SQLiteDoctorDAO();
 
-        // Clear the "tutors" table
-        connection.prepareStatement("DELETE FROM tutors").executeUpdate();
+        // Clear the "doctors" table
+        connection.prepareStatement("DELETE FROM doctors").executeUpdate();
         // Insert some test data
-        connection.prepareStatement("INSERT INTO tutors (cf, name, surname, iban) VALUES ('test1', 'name1', 'surname1', 'iban1')").executeUpdate();
-        connection.prepareStatement("INSERT INTO tutors (cf, name, surname, iban) VALUES ('test2', 'name2', 'surname2', 'iban2')").executeUpdate();
+        connection.prepareStatement("INSERT INTO doctors (cf, name, surname, iban) VALUES ('test1', 'name1', 'surname1', 'iban1')").executeUpdate();
+        connection.prepareStatement("INSERT INTO doctors (cf, name, surname, iban) VALUES ('test2', 'name2', 'surname2', 'iban2')").executeUpdate();
     }
 
     @Test
-    void testGetTutorByCF() throws SQLException {
-        Tutor tutor = tutorDAO.get("test1");
-        Assertions.assertNotNull(tutor);
-        Assertions.assertEquals("test1", tutor.getCF());
-        Assertions.assertEquals("name1", tutor.getName());
-        Assertions.assertEquals("surname1", tutor.getSurname());
-        Assertions.assertEquals("iban1", tutor.getIban());
+    void testGetDoctorByCF() throws SQLException {
+        Doctor doctor = doctorDAO.get("test1");
+        Assertions.assertNotNull(doctor);
+        Assertions.assertEquals("test1", doctor.getCF());
+        Assertions.assertEquals("name1", doctor.getName());
+        Assertions.assertEquals("surname1", doctor.getSurname());
+        Assertions.assertEquals("iban1", doctor.getIban());
     }
 
     @Test
-    void testGetTutorByCFNonExistent() throws SQLException {
-        Tutor tutor = tutorDAO.get("nonexistent");
-        Assertions.assertNull(tutor);
+    void testGetDoctorByCFNonExistent() throws SQLException {
+        Doctor doctor = doctorDAO.get("nonexistent");
+        Assertions.assertNull(doctor);
     }
 
     @Test
-    void testGetAllTutors() throws SQLException {
-        List<Tutor> tutors = tutorDAO.getAll();
-        Assertions.assertEquals(2, tutors.size());
+    void testGetAllDoctors() throws SQLException {
+        List<Doctor> doctor = doctorDAO.getAll();
+        Assertions.assertEquals(2, doctors.size());
     }
 
     @Test
-    void testAddTutor() throws SQLException {
-        Tutor tutor = new Tutor("test3", "name3", "surname3", "iban3");
-        tutorDAO.insert(tutor);
-        List<Tutor> tutors = tutorDAO.getAll();
-        Assertions.assertEquals(3, tutors.size());
+    void testAddDoctor() throws SQLException {
+        Doctor doctor = new Doctor("test3", "name3", "surname3", "iban3");
+        doctorDAO.insert(doctor);
+        List<Doctor> doctors = doctorDAO.getAll();
+        Assertions.assertEquals(3, doctors.size());
     }
 
     @Test
-    void testUpdateTutor() throws SQLException {
-        Tutor tutor = new Tutor("test1", "name1_updated", "surname1_updated", "iban1_updated");
-        tutorDAO.update(tutor);
-        Tutor updatedTutor = tutorDAO.get("test1");
-        Assertions.assertEquals("name1_updated", updatedTutor.getName());
-        Assertions.assertEquals("surname1_updated", updatedTutor.getSurname());
-        Assertions.assertEquals("iban1_updated", updatedTutor.getIban());
+    void testUpdateDoctor() throws SQLException {
+        Doctor doctor = new Doctor("test1", "name1_updated", "surname1_updated", "iban1_updated");
+        doctorDAO.update(doctor);
+        Doctor updatedDoctor = doctorDAO.get("test1");
+        Assertions.assertEquals("name1_updated", updatedDoctor.getName());
+        Assertions.assertEquals("surname1_updated", updatedDoctor.getSurname());
+        Assertions.assertEquals("iban1_updated", updatedDoctor.getIban());
     }
 
     @Test
-    void testDeleteTutor() throws SQLException {
-        boolean result = tutorDAO.delete("test1");
+    void testDeleteDoctor() throws SQLException {
+        boolean result = doctorDAO.delete("test1");
         Assertions.assertTrue(result);
-        List<Tutor> tutors = tutorDAO.getAll();
-        Assertions.assertEquals(1, tutors.size());
+        List<Doctor> doctors = doctorDAO.getAll();
+        Assertions.assertEquals(1, doctors.size());
     }
 
     @Test
-    void testDeleteNonExistentTutor() throws SQLException {
-        boolean result = tutorDAO.delete("nonexistent");
+    void testDeleteNonExistentDoctor() throws SQLException {
+        boolean result = doctorDAO.delete("nonexistent");
         Assertions.assertFalse(result);
-        List<Tutor> tutors = tutorDAO.getAll();
-        Assertions.assertEquals(2, tutors.size());
+        List<Doctor> doctors = doctorDAO.getAll();
+        Assertions.assertEquals(2, doctors.size());
     }
 }

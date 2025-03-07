@@ -1,5 +1,6 @@
 import businessLogic.*;
 import dao.*;
+import domainModel.*;
 import domainModel.Tags.*;
 import domainModel.Search.*;
 
@@ -15,7 +16,7 @@ public class Main {
 
         // DAOS
         DoctorDAO doctorDAO = new SQLiteDoctorDAO();
-        PatientAO patientDAO = new SQLitePatientDAO();
+        PatientDAO patientDAO = new SQLitePatientDAO();
         TagDAO tagDAO = new SQLiteTagDAO();
         VisitDAO visitDAO = new SQLiteVisitDAO(tagDAO);
 
@@ -77,15 +78,15 @@ public class Main {
 
 
         // Add sample lessons
-        int lMatFi = lessonsController.addLesson("Lezione di Matematica", "Prima lezione di matematica a Firenze", LocalDateTime.now(), LocalDateTime.now().plusHours(2), 25, "tutor1", tags1);
-        int lFisMi = lessonsController.addLesson("Lezione di Fisica", "Prima lezione di fisica a Milano", LocalDateTime.now(), LocalDateTime.now().plusHours(2), 25.00, "tutor2", tags2);
-        int lFisPa = lessonsController.addLesson("Lezione di Fisica", "Prima lezione di fisica a Parma", LocalDateTime.now().plusHours(3), LocalDateTime.now().plusHours(5), 30.00, "tutor2", tags3);
-        int lIngMi = lessonsController.addLesson("Lezione di Inglese", "Prima lezione di inglese a Milano", LocalDateTime.now().plusHours(23), LocalDateTime.now().plusHours(24), 35.00, "tutor2", tags4);
-        int lIngFi = lessonsController.addLesson("Lezione di Inglese", "Prima lezione di inglese a Firenze", LocalDateTime.now().plusHours(27), LocalDateTime.now().plusHours(29), 18.00, "tutor2", tags5);
+        int lMatFi = visitsController.addVisit("Lezione di Matematica", "Prima lezione di matematica a Firenze", LocalDateTime.now(), LocalDateTime.now().plusHours(2), 25, "tutor1", tags1);
+        int lFisMi = visitsController.addVisit("Lezione di Fisica", "Prima lezione di fisica a Milano", LocalDateTime.now(), LocalDateTime.now().plusHours(2), 25.00, "tutor2", tags2);
+        int lFisPa = visitsController.addVisit("Lezione di Fisica", "Prima lezione di fisica a Parma", LocalDateTime.now().plusHours(3), LocalDateTime.now().plusHours(5), 30.00, "tutor2", tags3);
+        int lIngMi = visitsController.addVisit("Lezione di Inglese", "Prima lezione di inglese a Milano", LocalDateTime.now().plusHours(23), LocalDateTime.now().plusHours(24), 35.00, "tutor2", tags4);
+        int lIngFi = visitsController.addVisit("Lezione di Inglese", "Prima lezione di inglese a Firenze", LocalDateTime.now().plusHours(27), LocalDateTime.now().plusHours(29), 18.00, "tutor2", tags5);
 
         // DECORATOR
         System.out.println("Searching for lessons with Matematica and Inglese tags and price less than 29.00. Query generated:");
-        List<Lesson> lessons = lessonsController.search(
+        List<Visit> visits = visitsController.search(
                 new DecoratorSearchPrice
                         (new DecoratorSearchSubject(
                                 new DecoratorSearchSubject(
@@ -95,17 +96,17 @@ public class Main {
                                 29.00));
 
         System.out.println("\nResults:");
-        for (Lesson l : lessons){
+        for (Visit l : visits){
             System.out.println(l.toString());
         }
 
         System.out.println("\nSearching for lessons starting from one hour ago. Query generated:");
 
-        List<Lesson> lessons2= lessonsController.search(new DecoratorSearchStartTime(
+        List<Visit> visits2= visitsController.search(new DecoratorSearchStartTime(
                 new SearchConcrete(), LocalDateTime.now().plusHours(5)));
 
         System.out.println("\nResults:");
-        for (Lesson l : lessons2){
+        for (Visit l : visits2){
             System.out.println(l.toString());
         }
     }

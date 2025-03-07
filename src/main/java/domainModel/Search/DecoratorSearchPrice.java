@@ -1,8 +1,5 @@
 package domainModel.Search;
 
-import domainModel.Visit;
-import java.util.List;
-
 public class DecoratorSearchPrice extends BaseDecoratorSearch{
 
     private final double maxPrice;

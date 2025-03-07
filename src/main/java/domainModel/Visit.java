@@ -31,56 +31,32 @@ public class Visit {
         this.state = new Available();
 
         if (endTime.equals(startTime) || endTime.isBefore(startTime))
-            throw new IllegalArgumentException("End time must be before start time");
+            throw new IllegalArgumentException("endTime must be before startTime");
     }
 
-    public int getIdVisit() {
-        return idVisit;
-    }
+    public int getIdVisit() { return idVisit; }
 
-    public String getTitle() {
-        return title;
-    }
+    public String getTitle() { return title; }
 
-    public String getDescription() {
-        return description;
-    }
+    public String getDescription() { return description; }
 
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
+    public LocalDateTime getStartTime() { return startTime; }
 
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
+    public LocalDateTime getEndTime() { return endTime; }
 
-    public double getPrice() {
-        return price;
-    }
+    public double getPrice() { return price; }
 
-    public String getDoctorCF() {
-        return doctorCF;
-    }
+    public String getDoctorCF() { return doctorCF; }
 
-    public State getState() {
-        return state.getState();
-    }
+    public String getState() { return state.getState(); }
 
-    public String getStateExtraInfo() {
-        return state.getStateExtraInfo();
-    }
+    public String getStateExtraInfo() { return state.getExtraInfo(); }
 
-    public List<Tag> getTags() {
-        return tags;
-    }
+    public List<Tag> getTags() { return tags; }
 
-    public void setTags(State state) {
-        this.state = state;
-    }
+    public void setState(State state) { this.state = state; }
 
-    public void addTag(Tag newTag) {
-        this.tags.add(newTag);
-    }
+    public void addTag(Tag newTag) { this.tags.add(newTag); }
 
     public boolean removeTag(String tagType, String tag) {
         if (!Objects.equals(tagType, "Level") && !Objects.equals(tagType, "Subject") && !Objects.equals(tagType, "Zone") && !Objects.equals(tagType, "IsOnline")) {
