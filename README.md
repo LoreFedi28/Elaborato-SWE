@@ -6,7 +6,7 @@ Questo progetto implementa un sistema di gestione per la prenotazione di visite 
 ## Struttura del Progetto
 - **src/main/java/** → Contiene il codice principale
 - **src/test/java/** → Contiene i test unitari
-- **database/** → Contiene il file PostgreSQL (`test.db` per i test e 'main.db' per il main)
+- **src/main/resources/database/** → Contiene il file PostgreSQL (`main.db` per il main e `test.db` per i test)
 
 ## Requisiti
 - Java 17+
