@@ -85,7 +85,7 @@ public class Main {
         int lIngFi = visitsController.addVisit("Lezione di Inglese", "Prima lezione di inglese a Firenze", LocalDateTime.now().plusHours(27), LocalDateTime.now().plusHours(29), 18.00, "tutor2", tags5);
 
         // DECORATOR
-        System.out.println("Searching for lessons with Matematica and Inglese tags and price less than 29.00. Query generated:");
+        System.out.println("Searching for visits with Matematica and Inglese tags and price less than 29.00. Query generated:");
         List<Visit> visits = visitsController.search(
                 new DecoratorSearchPrice
                         (new DecoratorSearchSpecialty(
@@ -97,17 +97,17 @@ public class Main {
 
         System.out.println("\nResults:");
         for (Visit v : visits){
-            System.out.println(l.toString());
+            System.out.println(v.toString());
         }
 
-        System.out.println("\nSearching for lessons starting from one hour ago. Query generated:");
+        System.out.println("\nSearching for visits starting from one hour ago. Query generated:");
 
         List<Visit> visits2= visitsController.search(new DecoratorSearchStartTime(
                 new SearchConcrete(), LocalDateTime.now().plusHours(5)));
 
         System.out.println("\nResults:");
-        for (Visit l : visits2){
-            System.out.println(l.toString());
+        for (Visit v : visits2){
+            System.out.println(v.toString());
         }
     }
 }
