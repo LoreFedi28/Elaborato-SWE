@@ -32,5 +32,3 @@ mvn test
 
 ---
 📌 **Autori:** Gianmarco De Laurentiis e Lorenzo Fedi
-
-# Elaborato-SWE
