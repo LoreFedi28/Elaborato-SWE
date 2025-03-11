@@ -54,11 +54,11 @@ public class VisitTest {
     void testTagOperations() {
         // Verifica i metodi di gestione dei tag
         TagZone tagZone = new TagZone("Firenze");
-        TagSubject tagSubject = new TagSubject("General Medicine");
+        TagSpecialty tagSpecialty = new TagSpecialty("General Medicine");
 
         // Aggiungi un tag
         visit.addTag(tagZone);
-        visit.addTag(tagSubject);
+        visit.addTag(tagSpecialty);
         Assertions.assertTrue(visit.getTags().contains(tagZone));
 
         // Rimuovi un tag

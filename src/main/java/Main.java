@@ -15,10 +15,10 @@ public class Main {
         Database.initDatabase();
 
         // DAOS
-        DoctorDAO doctorDAO = new SQLiteDoctorDAO();
-        PatientDAO patientDAO = new SQLitePatientDAO();
-        TagDAO tagDAO = new SQLiteTagDAO();
-        VisitDAO visitDAO = new SQLiteVisitDAO(tagDAO);
+        DoctorDAO doctorDAO = new PostgreSQLDoctorDAO();
+        PatientDAO patientDAO = new PostgreSQLPatientDAO();
+        TagDAO tagDAO = new PostegreSQLTagDAO();
+        VisitDAO visitDAO = new PostgreSQLVisitDAO(tagDAO);
 
         //Controllers
         DoctorsController doctorsController = new DoctorsController(doctorDAO);
@@ -43,38 +43,38 @@ public class Main {
         Tag tagZoneMilano = tagsController.createTag("Milano", "Zone");
         Tag tagZoneParma = tagsController.createTag("Parma", "Zone");
 
-        Tag tagSubjectMatematica = tagsController.createTag("Matematica", "Subject");
-        Tag tagSubjectFisica = tagsController.createTag("Fisica", "Subject");
-        Tag tagSubjectInglese = tagsController.createTag("Inglese", "Subject");
-        Tag tagSubjectProbabilita = tagsController.createTag("Probabilita", "Subject");
-        Tag tagSubjectStatistica = tagsController.createTag("Statistica", "Subject");
+        Tag tagSpecialtyCardiologia = tagsController.createTag("Cardiologia", "Specialty");
+        Tag tagSpecialtyOncologia = tagsController.createTag("Oncologia", "Specialty");
+        Tag tagSpecialtyOrtopedia = tagsController.createTag("Ortopedia", "Specialty");
+        Tag tagSpecialtyPneumologia = tagsController.createTag("Pneumologia", "Specialty");
+        Tag tagSpecialtyDiabetologia = tagsController.createTag("Diabetologia", "Specialty");
 
 
         // Creates a list of tags
         List<Tag> tags1 = new ArrayList<>();
         tags1.add(tagZoneFirenze);
-        tags1.add(tagSubjectMatematica);
-        tags1.add(tagSubjectStatistica);
-        tags1.add(tagSubjectProbabilita);
-        tags1.add(tagSubjectInglese);
+        tags1.add(tagSpecialtyCardiologia);
+        tags1.add(tagSpecialtyDiabetologia);
+        tags1.add(tagSpecialtyPneumologia);
+        tags1.add(tagSpecialtyOrtopedia);
 
         List<Tag> tags2 = new ArrayList<>();
         tags2.add(tagZoneMilano);
-        tags2.add(tagSubjectFisica);
-        tags2.add(tagSubjectMatematica);
-        tags2.add(tagSubjectInglese);
+        tags2.add(tagSpecialtyOncologia);
+        tags2.add(tagSpecialtyCardiologia);
+        tags2.add(tagSpecialtyOrtopedia);
 
         List<Tag> tags3 = new ArrayList<>();
         tags3.add(tagZoneParma);
-        tags3.add(tagSubjectFisica);
+        tags3.add(tagSpecialtyOncologia);
 
         List<Tag> tags4 = new ArrayList<>();
         tags4.add(tagZoneMilano);
-        tags4.add(tagSubjectInglese);
+        tags4.add(tagSpecialtyOrtopedia);
 
         List<Tag> tags5 = new ArrayList<>();
         tags5.add(tagZoneFirenze);
-        tags5.add(tagSubjectInglese);
+        tags5.add(tagSpecialtyOrtopedia);
 
 
         // Add sample lessons
@@ -88,15 +88,15 @@ public class Main {
         System.out.println("Searching for lessons with Matematica and Inglese tags and price less than 29.00. Query generated:");
         List<Visit> visits = visitsController.search(
                 new DecoratorSearchPrice
-                        (new DecoratorSearchSubject(
-                                new DecoratorSearchSubject(
+                        (new DecoratorSearchSpecialty(
+                                new DecoratorSearchSpecialty(
                                         new SearchConcrete(),
                                         "Matematica"),
                                 "Inglese"),
                                 29.00));
 
         System.out.println("\nResults:");
-        for (Visit l : visits){
+        for (Visit v : visits){
             System.out.println(l.toString());
         }
 

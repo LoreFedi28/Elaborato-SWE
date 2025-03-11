@@ -6,7 +6,7 @@ import java.sql.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public class SQLitePatientDAO implements PatientDAO {
+public class PostgreSQLPatientDAO implements PatientDAO {
     @Override
     public Patient get(String CF) throws SQLException{
         Connection conn = Database.getConnection();
@@ -16,7 +16,7 @@ public class SQLitePatientDAO implements PatientDAO {
         ResultSet rs = ps.executeQuery();
 
         if(rs.next()){
-            patient = new Patient(rs.getString("cf"), rs.getString("name"), rs.getString("surname"), rs.getString("level"));
+            patient = new Patient(rs.getString("cf"), rs.getString("name"), rs.getString("surname"), rs.getString("urgencyLevel"));
         }
 
         rs.close();
@@ -33,7 +33,7 @@ public class SQLitePatientDAO implements PatientDAO {
         ResultSet rs = stmt.executeQuery("SELECT * FROM patients");
 
         while(rs.next()){
-            patients.add(new Patient(rs.getString("cf"), rs.getString("name"), rs.getString("surname"), rs.getString("level")));
+            patients.add(new Patient(rs.getString("cf"), rs.getString("name"), rs.getString("surname"), rs.getString("urgencyLevel")));
         }
 
         return patients;
@@ -41,11 +41,11 @@ public class SQLitePatientDAO implements PatientDAO {
 
     public void insert(Patient newPatient) throws SQLException{
         Connection conn = Database.getConnection();
-        PreparedStatement ps = conn.prepareStatement("INSERT INTO patients (cf, name, surname, level) VALUES (?,?,?,?)");
+        PreparedStatement ps = conn.prepareStatement("INSERT INTO patients (cf, name, surname, urgecyLevel) VALUES (?,?,?,?)");
         ps.setString(1, newPatient.getCF());
         ps.setString(2, newPatient.getName());
         ps.setString(3, newPatient.getSurname());
-        ps.setString(4, newPatient.getLevel());
+        ps.setString(4, newPatient.getUrgencyLevel());
 
         ps.executeUpdate();
         ps.close();
@@ -55,11 +55,11 @@ public class SQLitePatientDAO implements PatientDAO {
     @Override
     public void update(Patient toUpdatePatient) throws SQLException{
         Connection conn = Database.getConnection();
-        PreparedStatement ps = conn.prepareStatement("UPDATE patients SET name = ?, surname = ?, level = ? WHERE cf = ?");
+        PreparedStatement ps = conn.prepareStatement("UPDATE patients SET name = ?, surname = ?, urgencyLevel = ? WHERE cf = ?");
         ps.setString(1, toUpdatePatient.getCF());
         ps.setString(2, toUpdatePatient.getName());
         ps.setString(3, toUpdatePatient.getSurname());
-        ps.setString(4, toUpdatePatient.getLevel());
+        ps.setString(4, toUpdatePatient.getUrgencyLevel());
 
         ps.executeUpdate();
         ps.close();

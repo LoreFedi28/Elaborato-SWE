@@ -6,7 +6,7 @@ import java.sql.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public class SQLiteDoctorDAO implements DoctorDAO {
+public class PostgreSQLDoctorDAO implements DoctorDAO {
 
     @Override
     public Doctor get(String CF) throws SQLException{

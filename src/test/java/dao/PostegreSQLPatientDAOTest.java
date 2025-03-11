@@ -11,8 +11,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-class SQLitePatientDAOTest {
-    private SQLitePatientDAO patientDAO;
+class PostegreSQLPatientDAOTest {
+    private PostgreSQLPatientDAO patientDAO;
 
     @BeforeAll
     static void initDb() throws SQLException, IOException {
@@ -24,7 +24,7 @@ class SQLitePatientDAOTest {
     @BeforeEach
     public void init() throws SQLException {
         Connection connection = Database.getConnection();
-        patientDAO = new SQLitePatientDAO();
+        patientDAO = new PostgreSQLPatientDAO();
 
         // Clear the "patients" table
         connection.prepareStatement("DELETE FROM patients").executeUpdate();

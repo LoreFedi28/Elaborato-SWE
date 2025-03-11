@@ -12,8 +12,8 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class SQLiteTagDAOTest {
-    private SQLiteTagDAO tagDAO;
+public class PostgreSQLTagDAOTest {
+    private PostegreSQLTagDAO tagDAO;
 
     @BeforeAll
     static void initDb() throws SQLException, IOException {
@@ -25,14 +25,14 @@ public class SQLiteTagDAOTest {
     @BeforeEach
     void setUp() throws SQLException {
         // Clear the "tags" table before each test
-        tagDAO = new SQLiteTagDAO();
+        tagDAO = new PostegreSQLTagDAO();
         Database.getConnection().prepareStatement("DELETE FROM tags").executeUpdate();
     }
 
     @Test
     void testGetTag() throws SQLException {
         // Test retrieving a tag from the database
-        Tag tag = new TagSubject("Math");
+        Tag tag = new TagSpecialty("Math");
         tagDAO.addTag(tag);
 
         Tag retrievedTag = tagDAO.getTag("Math", "Subject");
@@ -43,8 +43,8 @@ public class SQLiteTagDAOTest {
     @Test
     void testGetAllTags() throws SQLException {
         // Test retrieving all tags from the database
-        Tag tag1 = new TagSubject("Math");
-        Tag tag2 = new TagLevel("Intermediate");
+        Tag tag1 = new TagSpecialty("Math");
+        Tag tag2 = new TagUrgencyLevel("Intermediate");
         tagDAO.addTag(tag1);
         tagDAO.addTag(tag2);
 
@@ -66,11 +66,11 @@ public class SQLiteTagDAOTest {
     @Test
     void testAttachTag() throws Exception {
         // Test attaching a tag to a visit
-        VisitDAO visitDAO = new SQLiteVisitDAO(new SQLiteTagDAO());
+        VisitDAO visitDAO = new PostgreSQLVisitDAO(new PostegreSQLTagDAO());
         Visit visit = new Visit(1, "Math Class", "Learn math", LocalDateTime.now(), LocalDateTime.now().plusHours(1), 50.0, "Tutor123");
         visitDAO.insert(visit);
 
-        Tag tag = new TagSubject("Math");
+        Tag tag = new TagSpecialty("Math");
         tagDAO.attachTag(visit.getIdVisit(), tag);
 
         List<Tag> visitTags = tagDAO.getTagsByVisit(visit.getIdVisit());
@@ -93,11 +93,11 @@ public class SQLiteTagDAOTest {
     @Test
     void testDetachTag() throws Exception {
         // Test detaching a tag from a visit
-        VisitDAO visitDAO = new SQLiteVisitDAO(new SQLiteTagDAO());
+        VisitDAO visitDAO = new PostgreSQLVisitDAO(new PostegreSQLTagDAO());
         Visit visit = new Visit(1, "English Class", "Learn English", LocalDateTime.now(), LocalDateTime.now().plusHours(1), 40.0, "Tutor456");
         visitDAO.insert(visit);
 
-        Tag tag = new TagLevel("Advanced");
+        Tag tag = new TagUrgencyLevel("Advanced");
         tagDAO.attachTag(visit.getIdVisit(), tag);
 
         boolean detached = tagDAO.detachTag(visit.getIdVisit(), tag);
@@ -110,11 +110,11 @@ public class SQLiteTagDAOTest {
     @Test
     void testGetTagsByVisit() throws Exception {
         // Test retrieving tags associated with a visit
-        VisitDAO visitDAO = new SQLiteVisitDAO(new SQLiteTagDAO());
+        VisitDAO visitDAO = new PostgreSQLVisitDAO(new PostegreSQLTagDAO());
         Visit visit = new Visit(4, "Science Class", "Learn science", LocalDateTime.now(), LocalDateTime.now().plusHours(1), 60.0, "Tutor789");
         visitDAO.insert(visit);
 
-        Tag tag1 = new TagSubject("Physics");
+        Tag tag1 = new TagSpecialty("Physics");
         Tag tag2 = new TagIsOnline("True");
         tagDAO.attachTag(visit.getIdVisit(), tag1);
         tagDAO.attachTag(visit.getIdVisit(), tag2);

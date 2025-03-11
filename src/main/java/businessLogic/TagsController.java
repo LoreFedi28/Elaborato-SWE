@@ -19,13 +19,13 @@ public class TagsController {
                     this.tagDAO.addTag(tagIsOnline);
                     return this.tagDAO.getTag(tagIsOnline.getTag(), tagIsOnline.getTypeOfTag());
                 case "Level":
-                    TagLevel tagLevel = new TagLevel(tag);
+                    TagUrgencyLevel tagLevel = new TagUrgencyLevel(tag);
                     this.tagDAO.addTag(tagLevel);
                     return this.tagDAO.getTag(tagLevel.getTag(), tagLevel.getTypeOfTag());
                 case "Subject":
-                    TagSubject tagSubject = new TagSubject(tag);
-                    this.tagDAO.addTag(tagSubject);
-                    return this.tagDAO.getTag(tagSubject.getTag(), tagSubject.getTypeOfTag());
+                    TagSpecialty tagSpecialty = new TagSpecialty(tag);
+                    this.tagDAO.addTag(tagSpecialty);
+                    return this.tagDAO.getTag(tagSpecialty.getTag(), tagSpecialty.getTypeOfTag());
                 case "Zone":
                     TagZone tagZone = new TagZone(tag);
                     this.tagDAO.addTag(tagZone);

@@ -20,8 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class VisitsControllerTest {
 
     private static VisitsController visitsController;
-    private static SQLiteTagDAO tagDAO;
-    private static SQLiteVisitDAO visitDAO;
+    private static PostegreSQLTagDAO tagDAO;
+    private static PostgreSQLVisitDAO visitDAO;
 
     private static TagsController tagsController;
 
@@ -29,9 +29,9 @@ class VisitsControllerTest {
     static void setUp() throws Exception {
         Database.setDatabase("test.db");
         Database.initDatabase();
-        tagDAO = new SQLiteTagDAO();
-        visitDAO = new SQLiteVisitDAO(tagDAO);
-        visitsController = new VisitsController(visitDAO, tagDAO, new DoctorsController(new SQLiteDoctorDAO()));
+        tagDAO = new PostegreSQLTagDAO();
+        visitDAO = new PostgreSQLVisitDAO(tagDAO);
+        visitsController = new VisitsController(visitDAO, tagDAO, new DoctorsController(new PostgreSQLDoctorDAO()));
         tagsController = new TagsController(tagDAO);
     }
 
@@ -93,7 +93,7 @@ class VisitsControllerTest {
     @Test
     void testInsertVisit() throws Exception {
         List<Tag> tags = new ArrayList<>();
-        TagSubject ts = new TagSubject("English");
+        TagSpecialty ts = new TagSpecialty("English");
         tags.add(ts);
         int visitId = visitsController.addVisit("English Visit", "English basics", LocalDateTime.now(), LocalDateTime.now(), 40.0, "doctor2", tags);
 
@@ -149,9 +149,9 @@ class VisitsControllerTest {
         visitTags.add(tio);
         int idVisit = visitsController.addVisit("Math Visit", "Math basics", LocalDateTime.now(), LocalDateTime.now(), 50.0, "doctor1", visitTags);
 
-        TagSubject tagSubjectMath = new TagSubject("Math");
+        TagSpecialty tagSpecialtyMath = new TagSpecialty("Math");
 
-        visitsController.attachTag(idVisit, tagSubjectMath);
+        visitsController.attachTag(idVisit, tagSpecialtyMath);
 
         List<Tag> tags = tagDAO.getTagsByVisit(idVisit);
         assertEquals(3,tags.size());
@@ -168,13 +168,13 @@ class VisitsControllerTest {
         visitTags.add(tz);
         visitTags.add(tio);
         int idVisit = visitsController.addVisit("Math Visit", "Math basics", LocalDateTime.now(), LocalDateTime.now(), 50.0, "doctor1", visitTags);
-        TagSubject tagSubjectMath = new TagSubject("Math");
-        visitsController.attachTag(idVisit, tagSubjectMath);
+        TagSpecialty tagSpecialtyMath = new TagSpecialty("Math");
+        visitsController.attachTag(idVisit, tagSpecialtyMath);
 
         List<Tag> tagsPre = tagDAO.getTagsByVisit(idVisit);
         assertEquals(3, tagsPre.size());
 
-        boolean result = visitsController.detachTag(idVisit, tagSubjectMath);
+        boolean result = visitsController.detachTag(idVisit, tagSpecialtyMath);
 
         assertTrue(result);
         List<Tag> tagsPost = tagDAO.getTagsByVisit(idVisit);
@@ -186,7 +186,7 @@ class VisitsControllerTest {
         List<Tag> tags = new ArrayList<>();
         int visitId = visitsController.addVisit("Math Visit", "Math basics", LocalDateTime.now(), LocalDateTime.now(), 50.0, "doctor1", tags);
 
-        Tag tag = new TagSubject("TestTag");
+        Tag tag = new TagSpecialty("TestTag");
 
         boolean result = visitsController.detachTag(visitId, tag);
 

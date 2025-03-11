@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class SQLiteVisitDAO implements VisitDAO {
+public class PostgreSQLVisitDAO implements VisitDAO {
 
     private final TagDAO tagDAO;
 
-    public SQLiteVisitDAO(TagDAO tagDAO) {
+    public PostgreSQLVisitDAO(TagDAO tagDAO) {
         this.tagDAO = tagDAO;
     }
 

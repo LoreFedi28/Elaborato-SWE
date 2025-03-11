@@ -13,9 +13,9 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 
-class SQLiteVisitDAOTest {
-    private SQLiteVisitDAO visitDAO;
-    private SQLiteTagDAO tagDAO;
+class PostgreSQLVisitDAOTest {
+    private PostgreSQLVisitDAO visitDAO;
+    private PostegreSQLTagDAO tagDAO;
 
     @BeforeAll
     static void initDb() throws SQLException, IOException {
@@ -27,8 +27,8 @@ class SQLiteVisitDAOTest {
     @BeforeEach
     public void init() throws SQLException {
         Connection connection = Database.getConnection();
-        tagDAO = new SQLiteTagDAO();
-        visitDAO = new SQLiteVisitDAO(tagDAO);
+        tagDAO = new PostegreSQLTagDAO();
+        visitDAO = new PostgreSQLVisitDAO(tagDAO);
 
         // Clear the "visits" and "tags" tables
         connection.prepareStatement("DELETE FROM visits").executeUpdate();

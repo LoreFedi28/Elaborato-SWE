@@ -20,7 +20,7 @@ CREATE TABLE patients
     cf          TEXT PRIMARY KEY,
     name        TEXT NOT NULL,
     surname     TEXT NOT NULL,
-    level       TEXT NOT NULL
+    urgencyLevel       TEXT NOT NULL
 );
 
 -- Table: visits

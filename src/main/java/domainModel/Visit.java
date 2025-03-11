@@ -59,7 +59,7 @@ public class Visit {
     public void addTag(Tag newTag) { this.tags.add(newTag); }
 
     public boolean removeTag(String tagType, String tag) {
-        if (!Objects.equals(tagType, "Level") && !Objects.equals(tagType, "Subject") && !Objects.equals(tagType, "Zone") && !Objects.equals(tagType, "IsOnline")) {
+        if (!Objects.equals(tagType, "UrgencyLevel") && !Objects.equals(tagType, "Specialty") && !Objects.equals(tagType, "Zone") && !Objects.equals(tagType, "IsOnline")) {
             throw new IllegalArgumentException("Invalid tagType");
         }
         boolean removed = false;

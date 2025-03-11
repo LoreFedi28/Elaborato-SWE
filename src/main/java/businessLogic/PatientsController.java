@@ -8,8 +8,8 @@ public class PatientsController extends PeopleController<Patient>{
         super(patientDAO);
     }
 
-    public String addPerson(String cf, String name, String surname, String level) throws Exception {
-        Patient p = new Patient(cf, name, surname, level);
+    public String addPerson(String cf, String name, String surname, String urgencyLevel) throws Exception {
+        Patient p = new Patient(cf, name, surname, urgencyLevel);
         return super.addPerson(p);
     }
 }

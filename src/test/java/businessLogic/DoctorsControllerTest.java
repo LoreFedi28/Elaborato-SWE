@@ -1,7 +1,7 @@
 package businessLogic;
 
 import dao.Database;
-import dao.SQLiteDoctorDAO;
+import dao.PostgreSQLDoctorDAO;
 import dao.DoctorDAO;
 import domainModel.Doctor;
 
@@ -30,7 +30,7 @@ class DoctorsControllerTest {
         Database.initDatabase();
         resetDatabase();
 
-        DoctorDAO doctorDAO = new SQLiteDoctorDAO();
+        DoctorDAO doctorDAO = new PostgreSQLDoctorDAO();
         doctorsController = new DoctorsController(doctorDAO);
 
         testDoctor = new Doctor("DOCTORCF123", "DoctorName", "DoctorSurname", "DoctorLevel");

@@ -2,19 +2,19 @@ package domainModel;
 
 public class Patient extends Person {
 
-    private String level;
+    private String urgencyLevel;
 
-    public Patient(String patientCF, String name, String surname, String level){
+    public Patient(String patientCF, String name, String surname, String urgencyLevel){
         super(patientCF, name, surname);
-        this.level = level;
+        this.urgencyLevel = urgencyLevel;
     }
 
-    public String getLevel(){
-        return level;
+    public String getUrgencyLevel(){
+        return urgencyLevel;
     }
 
-    public void setLevel(String level){
-        this.level = level;
+    public void setUrgencyLevel(String urgencyLevel){
+        this.urgencyLevel = urgencyLevel;
     }
 
     @Override
@@ -23,7 +23,7 @@ public class Patient extends Person {
                 "fiscalCode='" + getCF() + '\'' +
                 ", name='" + getName() + '\'' +
                 ", surname='" + getSurname() + '\'' +
-                ", level=" + level +
+                ", urgencyLevel=" + urgencyLevel +
                 '}';
     }
 }

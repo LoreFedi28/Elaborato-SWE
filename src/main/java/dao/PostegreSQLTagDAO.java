@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class SQLiteTagDAO implements TagDAO{
+public class PostegreSQLTagDAO implements TagDAO{
 
     @Override
     public Tag getTag(String tag, String tagType) throws SQLException{
@@ -25,15 +25,15 @@ public class SQLiteTagDAO implements TagDAO{
                 Database.closeConnection(conn);
                 return tio;
             }
-            else if(Objects.equals(rs.getString("tagType"), "Level")){
-                TagLevel tl = new TagLevel(rs.getString("tag"));
+            else if(Objects.equals(rs.getString("tagType"), "UrgencyLevel")){
+                TagUrgencyLevel tul = new TagUrgencyLevel(rs.getString("tag"));
                 rs.close();
                 ps.close();
                 Database.closeConnection(conn);
-                return tl;
+                return tul;
             }
-            else if(Objects.equals(rs.getString("tagType"), "Subject")){
-                TagSubject ts = new TagSubject(rs.getString("tag"));
+            else if(Objects.equals(rs.getString("tagType"), "Specialty")){
+                TagSpecialty ts = new TagSpecialty(rs.getString("tag"));
                 rs.close();
                 ps.close();
                 Database.closeConnection(conn);
@@ -65,12 +65,12 @@ public class SQLiteTagDAO implements TagDAO{
                 TagIsOnline tio = new TagIsOnline(rs.getString("tag"));
                 tags.add(tio);
             }
-            else if(Objects.equals(rs.getString("tagType"), "Level")){
-                TagLevel tl = new TagLevel(rs.getString("tag"));
-                tags.add(tl);
+            else if(Objects.equals(rs.getString("tagType"), "UrgencyLevel")){
+                TagUrgencyLevel tul = new TagUrgencyLevel(rs.getString("tag"));
+                tags.add(tul);
             }
-            else if(Objects.equals(rs.getString("tagType"), "Subject")){
-                TagSubject ts = new TagSubject(rs.getString("tag"));
+            else if(Objects.equals(rs.getString("tagType"), "Specialty")){
+                TagSpecialty ts = new TagSpecialty(rs.getString("tag"));
                 tags.add(ts);
             }
             else if(Objects.equals(rs.getString("tagType"), "Zone")){
@@ -148,12 +148,12 @@ public class SQLiteTagDAO implements TagDAO{
                 TagIsOnline tio = new TagIsOnline(rs.getString("tag"));
                 tags.add(tio);
             }
-            else if(Objects.equals(rs.getString("tagType"), "Level")){
-                TagLevel tl = new TagLevel(rs.getString("tag"));
-                tags.add(tl);
+            else if(Objects.equals(rs.getString("tagType"), "UrgencyLevel")){
+                TagUrgencyLevel tul = new TagUrgencyLevel(rs.getString("tag"));
+                tags.add(tul);
             }
-            else if (Objects.equals(rs.getString("tagType"), "Subject")){
-                TagSubject ts = new TagSubject(rs.getString("tag"));
+            else if (Objects.equals(rs.getString("tagType"), "Specialty")){
+                TagSpecialty ts = new TagSpecialty(rs.getString("tag"));
                 tags.add(ts);
             }
             else if (Objects.equals(rs.getString("tagType"), "Zone")){
