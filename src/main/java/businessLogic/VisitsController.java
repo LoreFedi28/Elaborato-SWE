@@ -28,9 +28,13 @@ public class VisitsController {
     }
 
     public int addVisit(String title, String description, LocalDateTime startTime, LocalDateTime endTime, double price, String doctorCF, List<Tag> tags) throws Exception{
+        System.out.println("DEBUG: Cerco il medico con CF: " + doctorCF);
+
         Doctor doctor = doctorsController.getPerson(doctorCF);
-        if (doctor == null)
+        if (doctor == null) {
+            System.out.println("DEBUG: Il medico con CF " + doctorCF + " non esiste nel database!");
             throw new IllegalArgumentException("Doctor not found");
+        }
 
         for (Visit v : this.visitDAO.getAll()) {
             if (v.getDoctorCF().equals(doctorCF)) {

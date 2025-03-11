@@ -1,4 +1,4 @@
-package java.dao;
+package dao;
 
 import domainModel.Visit;
 import domainModel.Tags.*;
@@ -100,7 +100,7 @@ public class SQLiteTagDAOTest {
         Tag tag = new TagLevel("Advanced");
         tagDAO.attachTag(visit.getIdVisit(), tag);
 
-        boolean detached = tagDAO.detachTag(visit.getIdLesson(), tag);
+        boolean detached = tagDAO.detachTag(visit.getIdVisit(), tag);
         Assertions.assertTrue(detached);
 
         List<Tag> visitTags = tagDAO.getTagsByVisit(visit.getIdVisit());

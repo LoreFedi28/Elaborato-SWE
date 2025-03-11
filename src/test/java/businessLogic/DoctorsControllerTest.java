@@ -1,6 +1,5 @@
-package java.businessLogic;
+package businessLogic;
 
-import businessLogic.DoctorsController;
 import dao.Database;
 import dao.SQLiteDoctorDAO;
 import dao.DoctorDAO;

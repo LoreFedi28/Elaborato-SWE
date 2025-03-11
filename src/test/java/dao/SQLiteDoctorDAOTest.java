@@ -1,4 +1,4 @@
-package java.dao;
+package dao;
 
 import domainModel.Doctor;
 import org.junit.jupiter.api.Assertions;
@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 class SQLiteDoctorDAOTest {
-    private SQLiteDoctorDAO doctor;
+    private SQLiteDoctorDAO doctorDAO;
 
     @BeforeAll
     static void initDb() throws SQLException, IOException {
@@ -52,7 +52,7 @@ class SQLiteDoctorDAOTest {
     @Test
     void testGetAllDoctors() throws SQLException {
         List<Doctor> doctor = doctorDAO.getAll();
-        Assertions.assertEquals(2, doctors.size());
+        Assertions.assertEquals(2, doctor.size());
     }
 
     @Test

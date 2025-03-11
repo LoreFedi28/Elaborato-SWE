@@ -1,4 +1,4 @@
-package java.dao;
+package dao;
 
 import domainModel.Patient;
 import org.junit.jupiter.api.Assertions;

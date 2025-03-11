@@ -1,16 +1,12 @@
--- Schema that represents the database structure
--- Syntax: SQLite
-
 -- Drop tables if they already exist
-DROP TABLE IF EXISTS tags;
 DROP TABLE IF EXISTS visitsTags;
-DROP TABLE IF EXISTS doctors;
-DROP TABLE IF EXISTS patients;
+DROP TABLE IF EXISTS tags;
 DROP TABLE IF EXISTS visits;
-
+DROP TABLE IF EXISTS patients;
+DROP TABLE IF EXISTS doctors;
 
 -- Table: doctors
-CREATE TABLE IF NOT EXISTS doctors
+CREATE TABLE doctors
 (
     cf          TEXT PRIMARY KEY,
     name        TEXT NOT NULL,
@@ -19,7 +15,7 @@ CREATE TABLE IF NOT EXISTS doctors
 );
 
 -- Table: patients
-CREATE TABLE IF NOT EXISTS patients
+CREATE TABLE patients
 (
     cf          TEXT PRIMARY KEY,
     name        TEXT NOT NULL,
@@ -28,36 +24,35 @@ CREATE TABLE IF NOT EXISTS patients
 );
 
 -- Table: visits
-CREATE TABLE IF NOT EXISTS visits
+CREATE TABLE visits
 (
-    idVisit       INTEGER PRIMARY KEY AUTOINCREMENT,
+    idVisit        SERIAL PRIMARY KEY,
     doctorCF       TEXT NOT NULL,
-    title           TEXT NOT NULL,
-    description     TEXT,
-    startTime       TEXT NOT NULL,
-    endTime         TEXT NOT NULL,
-    price           FLOAT NOT NULL CHECK(price >= 0),
-    state           TEXT NOT NULL,
-    stateExtraInfo  TEXT,
-    FOREIGN KEY (doctorsCF) REFERENCES doctors (cf) ON UPDATE CASCADE ON DELETE CASCADE
-    );
-
+    title          TEXT NOT NULL,
+    description    TEXT,
+    startTime      TEXT NOT NULL,
+    endTime        TEXT NOT NULL,
+    price          FLOAT NOT NULL CHECK(price >= 0),
+    state          TEXT NOT NULL,
+    stateExtraInfo TEXT,
+    FOREIGN KEY (doctorCF) REFERENCES doctors (cf) ON UPDATE CASCADE ON DELETE CASCADE
+);
 
 -- Table: tags
-CREATE TABLE IF NOT EXISTS tags
+CREATE TABLE tags
 (
     tag         TEXT NOT NULL,
     tagType     TEXT NOT NULL,
     PRIMARY KEY (tag, tagType)
-    );
+);
 
 -- Table: visitsTags
-CREATE TABLE IF NOT EXISTS visitsTags
+CREATE TABLE visitsTags
 (
     tag         TEXT NOT NULL,
     tagType     TEXT NOT NULL,
-    idVisit  INTEGER NOT NULL,
+    idVisit     INTEGER NOT NULL,
     PRIMARY KEY (tag, tagType, idVisit),
     FOREIGN KEY (tag, tagType) REFERENCES tags (tag, tagType) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (idVisit) REFERENCES lessons (idVisit) ON UPDATE CASCADE ON DELETE CASCADE
-    );
+    FOREIGN KEY (idVisit) REFERENCES visits (idVisit) ON UPDATE CASCADE ON DELETE CASCADE
+);

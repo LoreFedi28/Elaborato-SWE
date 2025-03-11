@@ -1,4 +1,4 @@
-package test.java.domainModel;
+package domainModel;
 
 import domainModel.State.*;
 import org.junit.jupiter.api.Assertions;

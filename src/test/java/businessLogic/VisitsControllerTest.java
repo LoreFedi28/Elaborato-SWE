@@ -1,8 +1,5 @@
-package java.businessLogic;
+package businessLogic;
 
-import businessLogic.DoctorsController;
-import businessLogic.TagsController;
-import businessLogic.VisitsController;
 import dao.*;
 import domainModel.Visit;
 import domainModel.State.*;
