@@ -20,8 +20,8 @@ class DoctorsControllerTest {
 
     @BeforeAll
     static void initDb() throws SQLException, IOException {
-        // Imposta il database di test
-        Database.setDatabase("test.db");
+        // Imposta il database di test PostgreSQL
+        Database.setDatabase("jdbc:postgresql://localhost:5432/testdb");
         Database.initDatabase();
     }
 
@@ -33,25 +33,20 @@ class DoctorsControllerTest {
         DoctorDAO doctorDAO = new PostgreSQLDoctorDAO();
         doctorsController = new DoctorsController(doctorDAO);
 
-        testDoctor = new Doctor("DOCTORCF123", "DoctorName", "DoctorSurname", "DoctorLevel");
+        testDoctor = new Doctor("DOCTORCF123", "DoctorName", "DoctorSurname", "DoctorUrgencyLevel");
         doctorDAO.insert(testDoctor);
     }
 
     private void resetDatabase() throws SQLException {
-        Connection connection = Database.getConnection();
-
-        // Cancella dati da tutte le tabelle
-        connection.prepareStatement("DELETE FROM doctors").executeUpdate(); // Aggiungi altre tabelle se necessario
-
-        // Reimposta i contatori di autoincremento
-        connection.prepareStatement("DELETE FROM sqlite_sequence").executeUpdate();
-        Database.closeConnection(connection);
+        try (Connection connection = Database.getConnection()) {
+            connection.prepareStatement("DELETE FROM doctors CASCADE;").executeUpdate();
+            connection.prepareStatement("ALTER SEQUENCE doctors_id_seq RESTART WITH 1;").executeUpdate();
+        }
     }
-
 
     @Test
     public void when_AddingNewDoctor_Expect_Success() throws Exception {
-        Assertions.assertDoesNotThrow(() -> doctorsController.addPerson("DOCTORCF456", "NewDoctorName", "NewDoctorSurname", "NewDoctorLevel"));
+        Assertions.assertDoesNotThrow(() -> doctorsController.addPerson("DOCTORCF456", "NewDoctorName", "NewDoctorSurname", "NewDoctorUrgencyLevel"));
         Doctor addedDoctor = doctorsController.getPerson("DOCTORCF456");
         Assertions.assertEquals("DOCTORCF456", addedDoctor.getCF());
     }
@@ -60,7 +55,7 @@ class DoctorsControllerTest {
     public void when_AddingAlreadyExistingDoctor_Expect_Exception() {
         Assertions.assertThrows(
                 Exception.class,
-                () -> doctorsController.addPerson("DOCTORCF123", "DuplicateDoctorName", "DuplicateDoctorSurname", "DuplicateDoctorLevel"),
+                () -> doctorsController.addPerson("DOCTORCF123", "DuplicateDoctorName", "DuplicateDoctorSurname", "DuplicateDoctorUrgencyLevel"),
                 "Expected addPerson() to throw, but it didn't"
         );
     }

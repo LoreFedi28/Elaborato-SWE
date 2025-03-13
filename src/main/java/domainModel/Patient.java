@@ -19,7 +19,7 @@ public class Patient extends Person {
 
     @Override
     public String toString() {
-        return "Trainer{" +
+        return "Patient{" +
                 "fiscalCode='" + getCF() + '\'' +
                 ", name='" + getName() + '\'' +
                 ", surname='" + getSurname() + '\'' +

@@ -12,13 +12,13 @@ class StateTest {
 
     @BeforeEach
     void setUp() {
-        // Initialize a state before each test
+        // Inizializza lo stato di default come Available
         state = new Available();
     }
 
     @Test
     void testAvailableState() {
-        // Verify that the "Available" state is created correctly
+        // Verifica che lo stato "Available" sia creato correttamente
         Assertions.assertEquals("Available", state.getState());
         Assertions.assertNull(state.getExtraInfo());
     }
@@ -28,9 +28,9 @@ class StateTest {
         LocalDateTime completedTime = LocalDateTime.now();
         state = new Completed(completedTime);
 
-        // Verify that the "Completed" state is created correctly
+        // Verifica che lo stato "Completed" sia creato correttamente
         Assertions.assertEquals("Completed", state.getState());
-        Assertions.assertEquals(completedTime.toString(), state.getExtraInfo());
+        Assertions.assertTrue(completedTime.isEqual(LocalDateTime.parse(state.getExtraInfo())));
     }
 
     @Test
@@ -38,18 +38,18 @@ class StateTest {
         LocalDateTime cancelledTime = LocalDateTime.now();
         state = new Cancelled(cancelledTime);
 
-        // Verify that the "Cancelled" state is created correctly
+        // Verifica che lo stato "Cancelled" sia creato correttamente
         Assertions.assertEquals("Cancelled", state.getState());
-        Assertions.assertEquals(cancelledTime.toString(), state.getExtraInfo());
+        Assertions.assertTrue(cancelledTime.isEqual(LocalDateTime.parse(state.getExtraInfo())));
     }
 
     @Test
     void testBookedState() {
-        String studentCF = "123456";
-        state = new Booked(studentCF);
+        String patientCF = "123456";
+        state = new Booked(patientCF);
 
-        // Verify that the "Booked" state is created correctly
+        // Verifica che lo stato "Booked" sia creato correttamente
         Assertions.assertEquals("Booked", state.getState());
-        Assertions.assertEquals(studentCF, state.getExtraInfo());
+        Assertions.assertEquals(patientCF, state.getExtraInfo());
     }
 }

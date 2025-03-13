@@ -13,28 +13,24 @@ public class VisitTest {
 
     @BeforeEach
     void setUp() {
-        // Inizializza una nuova visita prima di ogni test
-        visit = new Visit(1, "Medical Checkup", "General health checkup", LocalDateTime.now(), LocalDateTime.now().plusHours(1), 10.0, "12345");
+        visit = new Visit(1, "Visita Pneumologica", "Controllo Asmatico", LocalDateTime.now(), LocalDateTime.now().plusHours(1), 10.0, "12345");
     }
 
     @Test
     void testVisitCreationWithValidDates() {
-        // Assicura che la creazione di una visita con date valide non lanci un'eccezione
-        Assertions.assertDoesNotThrow(() -> new Visit(2, "Dental Checkup", "Routine dental checkup", LocalDateTime.now(), LocalDateTime.now().plusHours(2), 20.0, "67890"));
+        Assertions.assertDoesNotThrow(() -> new Visit(2, "Visita Diabetologica", "Controllo Di Routine Diabetologico", LocalDateTime.now(), LocalDateTime.now().plusHours(2), 20.0, "67890"));
     }
 
     @Test
     void testVisitCreationWithInvalidDates() {
-        // Assicura che la creazione di una visita con data di fine precedente a quella di inizio generi un'eccezione
         Assertions.assertThrows(IllegalArgumentException.class, () -> new Visit(3, "Invalid Visit", "Invalid dates", LocalDateTime.now(), LocalDateTime.now().minusHours(1), 5.0, "54321"));
     }
 
     @Test
     void testGetters() {
-        // Verifica i metodi di getter
         Assertions.assertEquals(1, visit.getIdVisit());
-        Assertions.assertEquals("Medical Checkup", visit.getTitle());
-        Assertions.assertEquals("General health checkup", visit.getDescription());
+        Assertions.assertEquals("Visita Pneumologica", visit.getTitle());
+        Assertions.assertEquals("Controllo Asmatico", visit.getDescription());
         Assertions.assertNotNull(visit.getStartTime());
         Assertions.assertNotNull(visit.getEndTime());
         Assertions.assertEquals(10.0, visit.getPrice());
@@ -43,7 +39,6 @@ public class VisitTest {
 
     @Test
     void testSetState() {
-        // Verifica il metodo di impostazione dello stato
         Available availableState = new Available();
         visit.setState(availableState);
         Assertions.assertEquals("Available", visit.getState());
@@ -52,24 +47,19 @@ public class VisitTest {
 
     @Test
     void testTagOperations() {
-        // Verifica i metodi di gestione dei tag
         TagZone tagZone = new TagZone("Firenze");
-        TagSpecialty tagSpecialty = new TagSpecialty("General Medicine");
+        TagSpecialty tagSpecialty = new TagSpecialty("Pneumologia");
 
-        // Aggiungi un tag
         visit.addTag(tagZone);
         visit.addTag(tagSpecialty);
         Assertions.assertTrue(visit.getTags().contains(tagZone));
 
-        // Rimuovi un tag
-        visit.removeTag("Zone", "Firenze");
+        visit.removeTag("Zona", "Firenze");
         Assertions.assertFalse(visit.getTags().contains(tagZone));
 
-        // Verifica che il metodo removeTag lanci un'eccezione quando si cerca di rimuovere un tag con un tagType non valido
         Assertions.assertThrows(IllegalArgumentException.class, () -> visit.removeTag("InvalidType", "Tag1"));
 
-        // Tentativo di rimuovere un tag che non esiste
-        boolean removed = visit.removeTag("Zone", "Tag2");
+        boolean removed = visit.removeTag("Zona", "Tag2");
         Assertions.assertFalse(removed);
     }
 }

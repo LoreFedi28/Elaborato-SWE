@@ -77,22 +77,22 @@ public class Main {
         tags5.add(tagSpecialtyOrtopedia);
 
 
-        // Add sample lessons
-        int lMatFi = visitsController.addVisit("Lezione di Matematica", "Prima lezione di matematica a Firenze", LocalDateTime.now(), LocalDateTime.now().plusHours(2), 25, "tutor1", tags1);
-        int lFisMi = visitsController.addVisit("Lezione di Fisica", "Prima lezione di fisica a Milano", LocalDateTime.now(), LocalDateTime.now().plusHours(2), 25.00, "tutor2", tags2);
-        int lFisPa = visitsController.addVisit("Lezione di Fisica", "Prima lezione di fisica a Parma", LocalDateTime.now().plusHours(3), LocalDateTime.now().plusHours(5), 30.00, "tutor2", tags3);
-        int lIngMi = visitsController.addVisit("Lezione di Inglese", "Prima lezione di inglese a Milano", LocalDateTime.now().plusHours(23), LocalDateTime.now().plusHours(24), 35.00, "tutor2", tags4);
-        int lIngFi = visitsController.addVisit("Lezione di Inglese", "Prima lezione di inglese a Firenze", LocalDateTime.now().plusHours(27), LocalDateTime.now().plusHours(29), 18.00, "tutor2", tags5);
+        // Add sample visits
+        int vCarFi = visitsController.addVisit("Visita Cardiologica", "Prima visita cardiologica a Firenze", LocalDateTime.now(), LocalDateTime.now().plusHours(2), 25, "doctor1", tags1);
+        int vOncMi = visitsController.addVisit("Visita Oncologica", "Prima visita oncologica a Milano", LocalDateTime.now(), LocalDateTime.now().plusHours(2), 25.00, "doctor2", tags2);
+        int vOncPr = visitsController.addVisit("Visita Oncologica", "Prima visita oncologica a Parma", LocalDateTime.now().plusHours(3), LocalDateTime.now().plusHours(5), 30.00, "doctor2", tags3);
+        int vOrtMi = visitsController.addVisit("Visita Ortopedica", "Prima visita ortopedica a Milano", LocalDateTime.now().plusHours(23), LocalDateTime.now().plusHours(24), 35.00, "doctor2", tags4);
+        int vOrtFi = visitsController.addVisit("Visita Ortopedica", "Prima visita ortopedica a Firenze", LocalDateTime.now().plusHours(27), LocalDateTime.now().plusHours(29), 18.00, "doctor2", tags5);
 
         // DECORATOR
-        System.out.println("Searching for visits with Matematica and Inglese tags and price less than 29.00. Query generated:");
+        System.out.println("Searching for visits with Cardiologia and Ortopedia tags and price less than 29.00. Query generated:");
         List<Visit> visits = visitsController.search(
                 new DecoratorSearchPrice
                         (new DecoratorSearchSpecialty(
                                 new DecoratorSearchSpecialty(
                                         new SearchConcrete(),
-                                        "Matematica"),
-                                "Inglese"),
+                                        "Cardiologia"),
+                                "Ortopedia"),
                                 29.00));
 
         System.out.println("\nResults:");
