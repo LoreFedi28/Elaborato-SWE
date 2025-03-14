@@ -79,23 +79,14 @@ public class Visit {
     }
 
     public boolean removeTag(String tagType, String tag) {
-        if (!Objects.equals(tagType, "UrgencyLevel") &&
-                !Objects.equals(tagType, "Specialty") &&
-                !Objects.equals(tagType, "Zone") &&
-                !Objects.equals(tagType, "IsOnline")) {
+        if (!tagType.equals("UrgencyLevel") &&
+                !tagType.equals("Specialty") &&
+                !tagType.equals("Zone") &&
+                !tagType.equals("IsOnline")) {
             throw new IllegalArgumentException("Invalid tagType");
         }
-
-        boolean removed = false;
-        Iterator<Tag> iterator = tags.iterator();
-        while (iterator.hasNext()) {
-            Tag t = iterator.next();
-            if (Objects.equals(t.getTypeOfTag(), tagType) && Objects.equals(t.getTag(), tag)) {
-                iterator.remove();
-                removed = true;
-            }
-        }
-        return removed;
+        // removeIf restituisce true se almeno un elemento è stato rimosso, false altrimenti
+        return tags.removeIf(t -> t.getTypeOfTag().equals(tagType) && t.getTag().equals(tag));
     }
 
     @Override

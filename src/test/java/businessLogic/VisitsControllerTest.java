@@ -27,8 +27,8 @@ class VisitsControllerTest {
 
     @BeforeAll
     static void setUp() throws Exception {
-        Database.setDatabase("jdbc:postgresql://localhost:5432/GestionaleTest");
-        Database.initDatabase();
+        Database.setDatabase("jdbc:postgresql://localhost:5432/GestionaleVisiteMediche_test");
+        Database.initDatabase(true);
         tagDAO = new PostgreSQLTagDAO();
         visitDAO = new PostgreSQLVisitDAO(tagDAO);
         visitsController = new VisitsController(visitDAO, tagDAO, new DoctorsController(new PostgreSQLDoctorDAO()));

@@ -21,6 +21,13 @@ public abstract class PeopleController<T extends Person> {
         if (newPerson == null || newPerson.getCF() == null || newPerson.getCF().isBlank()) {
             throw new IllegalArgumentException("La persona o il codice fiscale non possono essere nulli o vuoti.");
         }
+
+        // Verifica se la persona esiste già nel sistema
+        Optional<T> existingPerson = getPerson(newPerson.getCF());
+        if (existingPerson.isPresent()) {
+            throw new IllegalArgumentException("Una persona con questo codice fiscale esiste già.");
+        }
+
         try {
             this.dao.insert(newPerson);
             return newPerson.getCF();

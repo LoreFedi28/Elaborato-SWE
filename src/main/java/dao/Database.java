@@ -21,9 +21,13 @@ public class Database {
         }
     }
 
-    public static int initDatabase() throws IOException, SQLException {
+    // Metodo con argomento booleano per decidere quale script usare
+    public static void initDatabase(boolean isTest) throws IOException, SQLException {
         StringBuilder resultStringBuilder = new StringBuilder();
-        try (BufferedReader br = new BufferedReader(new FileReader("src/main/resources/database/schema.sql"))) {
+        // Usa lo script di test se isTest è true, altrimenti usa lo script principale
+        String scriptPath = isTest ? "src/test/resources/database/schema_test.sql" : "src/main/resources/database/schema.sql";
+
+        try (BufferedReader br = new BufferedReader(new FileReader(scriptPath))) {
             String line;
             while ((line = br.readLine()) != null) {
                 resultStringBuilder.append(line).append("\n");
@@ -32,15 +36,17 @@ public class Database {
 
         try (Connection connection = getConnection();
              Statement statement = connection.createStatement()) {
-            return statement.executeUpdate(resultStringBuilder.toString());
+            statement.executeUpdate(resultStringBuilder.toString());
         }
     }
 
     public static void main(String[] args) {
-        try (Connection conn = getConnection()) {
-            System.out.println("Connessione a PostgreSQL riuscita!");
-        } catch (SQLException e) {
-            System.out.println("Errore di connessione: " + e.getMessage());
+        try {
+            // Passa 'true' per usare lo script di test, 'false' per quello di produzione
+            Database.initDatabase(true);  // Usa il database di test
+            System.out.println("Database di test inizializzato.");
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
         }
     }
 

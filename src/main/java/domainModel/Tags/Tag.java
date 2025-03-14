@@ -29,14 +29,15 @@ public abstract class Tag {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (!(obj instanceof Tag)) return false;
+        if (obj == null || getClass() != obj.getClass()) return false;
         Tag other = (Tag) obj;
-        return Objects.equals(tag, other.tag) && Objects.equals(typeOfTag, other.typeOfTag);
+        return Objects.equals(getTypeOfTag(), other.getTypeOfTag())
+                && Objects.equals(getTag(), other.getTag());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(tag, typeOfTag);
+        return Objects.hash(getTypeOfTag(), getTag());
     }
 
     @Override

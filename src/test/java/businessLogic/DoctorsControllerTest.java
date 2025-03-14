@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.sql.*;
-import java.sql.SQLException;
 import java.util.Optional;
 
 class DoctorsControllerTest {
@@ -21,19 +20,18 @@ class DoctorsControllerTest {
 
     @BeforeAll
     static void initDb() throws SQLException, IOException {
-        Database.setDatabase("jdbc:postgresql://localhost:5432/GestionaleTest");
-        Database.initDatabase();
+        Database.setDatabase("jdbc:postgresql://localhost:5432/GestionaleVisiteMediche_test");
+        Database.initDatabase(true);
     }
 
     @BeforeEach
     public void init() throws Exception {
-        Database.initDatabase();
         resetDatabase();
 
         DoctorDAO doctorDAO = new PostgreSQLDoctorDAO();
         doctorsController = new DoctorsController(doctorDAO);
 
-        testDoctor = new Doctor("DOCTORCF123", "DoctorName", "DoctorSurname", "DoctorUrgencyLevel");
+        testDoctor = new Doctor("DOCTORCF123", "DoctorName", "DoctorSurname", "DoctorIBAN");
         doctorDAO.insert(testDoctor);
     }
 
@@ -46,30 +44,33 @@ class DoctorsControllerTest {
 
     @Test
     public void when_AddingNewDoctor_Expect_Success() throws Exception {
-        Assertions.assertDoesNotThrow(() -> doctorsController.addPerson("DOCTORCF456", "NewDoctorName", "NewDoctorSurname", "NewDoctorUrgencyLevel"));
+        Assertions.assertDoesNotThrow(() -> doctorsController.addPerson("DOCTORCF456", "NewDoctorName", "NewDoctorSurname", "NewDoctorIBAN"));
+
         Optional<Doctor> addedDoctor = doctorsController.getPerson("DOCTORCF456");
+        Assertions.assertTrue(addedDoctor.isPresent(), "Il dottore non è stato trovato nel database");
         Assertions.assertEquals("DOCTORCF456", addedDoctor.get().getCF());
     }
 
     @Test
     public void when_AddingAlreadyExistingDoctor_Expect_Exception() {
         Assertions.assertThrows(
-                Exception.class,
-                () -> doctorsController.addPerson("DOCTORCF123", "DuplicateDoctorName", "DuplicateDoctorSurname", "DuplicateDoctorUrgencyLevel"),
-                "Expected addPerson() to throw, but it didn't"
+                IllegalArgumentException.class,
+                () -> doctorsController.addPerson("DOCTORCF123", "DuplicateDoctorName", "DuplicateDoctorSurname", "DuplicateDoctorIBAN"),
+                "Expected addPerson() to throw an IllegalArgumentException, but it didn't"
         );
     }
 
     @Test
     public void when_GettingExistingDoctor_Expect_ReturnDoctor() throws Exception {
         Optional<Doctor> retrievedDoctor = doctorsController.getPerson("DOCTORCF123");
-        Assertions.assertEquals(testDoctor, retrievedDoctor);
+        Assertions.assertTrue(retrievedDoctor.isPresent(), "Il dottore non è stato trovato");
+        Assertions.assertEquals(testDoctor, retrievedDoctor.get());
     }
 
     @Test
-    public void when_GettingNonExistingDoctor_Expect_ReturnNull() throws Exception {
+    public void when_GettingNonExistingDoctor_Expect_ReturnEmptyOptional() throws Exception {
         Optional<Doctor> nonExistingDoctor = doctorsController.getPerson("DOCTORCF999");
-        Assertions.assertNull(nonExistingDoctor);
+        Assertions.assertTrue(nonExistingDoctor.isEmpty());
     }
 
     @Test

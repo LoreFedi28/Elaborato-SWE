@@ -11,7 +11,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         // Imposta il database PostgreSQL
         System.out.println("Inizializzazione del database...");
-        Database.initDatabase();
+        Database.initDatabase(false); // Se isTest è true, carica schema_test.sql da src/test/resources/database/, se isTest è false, carica schema.sql da src/main/resources/database/
 
         // DAO (Data Access Object)
         DoctorDAO doctorDAO = new PostgreSQLDoctorDAO();

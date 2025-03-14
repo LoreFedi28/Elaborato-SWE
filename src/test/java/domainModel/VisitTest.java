@@ -54,12 +54,13 @@ public class VisitTest {
         visit.addTag(tagSpecialty);
         Assertions.assertTrue(visit.getTags().contains(tagZone));
 
-        visit.removeTag("Zona", "Firenze");
+        // Usa il tagType corretto ("Zone" invece di "Zona")
+        visit.removeTag("Zone", "Firenze");
         Assertions.assertFalse(visit.getTags().contains(tagZone));
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> visit.removeTag("InvalidType", "Tag1"));
 
-        boolean removed = visit.removeTag("Zona", "Tag2");
+        boolean removed = visit.removeTag("Zone", "Tag2");
         Assertions.assertFalse(removed);
     }
 }

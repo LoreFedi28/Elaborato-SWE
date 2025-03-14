@@ -17,8 +17,8 @@ class PostgreSQLDoctorDAOTest {
     @BeforeAll
     static void initDb() throws SQLException, IOException {
         // Set up the test database
-        Database.setDatabase("jdbc:postgresql://localhost:5432/testdb");
-        Database.initDatabase();
+        Database.setDatabase("jdbc:postgresql://localhost:5432/GestionaleVisiteMediche_test");
+        Database.initDatabase(true);
     }
 
     @BeforeEach

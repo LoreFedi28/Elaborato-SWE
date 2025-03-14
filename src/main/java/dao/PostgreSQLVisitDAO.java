@@ -92,7 +92,7 @@ public class PostgreSQLVisitDAO implements VisitDAO {
 
     @Override
     public void insert(Visit visit) throws SQLException {
-        String query = "INSERT INTO visits (title, description, startTime, endTime, price, doctorCF, state, stateExtraInfo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO visits (title, description, startTime, endTime, price, doctorCF, state, stateExtraInfo) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING idVisit";
 
         try (Connection conn = Database.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
@@ -106,7 +106,14 @@ public class PostgreSQLVisitDAO implements VisitDAO {
             ps.setString(7, visit.getState());
             ps.setString(8, visit.getStateExtraInfo());
 
-            ps.executeUpdate();
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    // Usa l'ID generato, ma non è necessario settarlo nell'oggetto visit
+                    int generatedId = rs.getInt("idVisit");
+                    System.out.println("Visit ID generated: " + generatedId);
+                    // Puoi anche restituire l'ID o gestirlo in altro modo se necessario
+                }
+            }
         }
     }
 
