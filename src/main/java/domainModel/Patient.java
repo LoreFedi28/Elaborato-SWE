@@ -34,8 +34,7 @@ public class Patient extends Person {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (!(obj instanceof Patient)) return false;
-        Patient patient = (Patient) obj;
+        if (!(obj instanceof Patient patient)) return false;
         return Objects.equals(getCF(), patient.getCF()) &&
                 Objects.equals(getName(), patient.getName()) &&
                 Objects.equals(getSurname(), patient.getSurname()) &&

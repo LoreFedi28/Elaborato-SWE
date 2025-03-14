@@ -1,7 +1,6 @@
 package dao;
 
 import domainModel.State.*;
-import domainModel.Tags.*;
 import domainModel.Visit;
 
 import java.sql.*;

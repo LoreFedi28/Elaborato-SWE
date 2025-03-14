@@ -109,8 +109,8 @@ public class PostgreSQLPatientDAO implements PatientDAO {
     public List<Patient> findByAppointmentDate(String appointmentDate) throws SQLException {
         List<Patient> patients = new ArrayList<>();
         String query = """
-            SELECT p.* FROM patients p 
-            JOIN visits v ON p.cf = v.stateExtraInfo 
+            SELECT p.* FROM patients p\s
+            JOIN visits v ON p.cf = v.stateExtraInfo\s
             WHERE v.startTime::date = ? AND v.state = 'Booked'""";
 
         try (Connection conn = Database.getConnection();

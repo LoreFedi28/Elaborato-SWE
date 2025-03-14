@@ -1,7 +1,5 @@
 package domainModel.Search;
 
-import java.util.Objects;
-
 public class DecoratorSearchIsOnline extends BaseDecoratorSearch {
 
     private final String online;

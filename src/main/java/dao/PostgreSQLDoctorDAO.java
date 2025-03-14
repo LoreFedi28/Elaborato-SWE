@@ -115,10 +115,10 @@ public class PostgreSQLDoctorDAO implements DoctorDAO {
     public List<Doctor> findBySpecialization(String specialization) throws SQLException {
         List<Doctor> doctors = new ArrayList<>();
         String query = """
-            SELECT d.* FROM doctors d 
+            SELECT d.* FROM doctors d\s
             JOIN visitsTags vt ON d.cf = vt.idVisit
             WHERE vt.tagType = 'Specialty' AND vt.tag = ?
-        """;
+       \s""";
 
         try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(query)) {

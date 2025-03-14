@@ -5,17 +5,16 @@ import domainModel.Tags.Tag;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
 public class Visit {
     private final int idVisit;
-    private String title;
-    private String description;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private double price;
+    private final String title;
+    private final String description;
+    private final LocalDateTime startTime;
+    private final LocalDateTime endTime;
+    private final double price;
     private final String doctorCF;
     private State state;
     private final List<Tag> tags = new ArrayList<>();
@@ -115,8 +114,7 @@ public class Visit {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (!(obj instanceof Visit)) return false;
-        Visit visit = (Visit) obj;
+        if (!(obj instanceof Visit visit)) return false;
         return idVisit == visit.idVisit &&
                 Double.compare(visit.price, price) == 0 &&
                 Objects.equals(title, visit.title) &&

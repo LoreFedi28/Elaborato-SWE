@@ -133,12 +133,12 @@ public class PostgreSQLTagDAO implements TagDAO {
         String tag = rs.getString("tag");
         String tagType = rs.getString("tagType").toLowerCase();  // Convertiamo in minuscolo
 
-        switch (tagType) {
-            case "online": return new TagIsOnline(tag);
-            case "urgencylevel": return new TagUrgencyLevel(tag);
-            case "specialty": return new TagSpecialty(tag);
-            case "zone": return new TagZone(tag);  // Ora corrisponde anche se nel DB è scritto in minuscolo
-            default: throw new SQLException("Tipo di tag sconosciuto: " + tagType);
-        }
+        return switch (tagType) {
+            case "online" -> new TagIsOnline(tag);
+            case "urgencylevel" -> new TagUrgencyLevel(tag);
+            case "specialty" -> new TagSpecialty(tag);
+            case "zone" -> new TagZone(tag);  // Ora corrisponde anche se nel DB è scritto in minuscolo
+            default -> throw new SQLException("Tipo di tag sconosciuto: " + tagType);
+        };
     }
 }

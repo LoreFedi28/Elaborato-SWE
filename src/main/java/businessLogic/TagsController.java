@@ -20,23 +20,13 @@ public class TagsController {
             return existingTag;
         }
 
-        Tag newTag;
-        switch (tagType) {
-            case "Online":
-                newTag = new TagIsOnline(tag);
-                break;
-            case "UrgencyLevel":
-                newTag = new TagUrgencyLevel(tag);
-                break;
-            case "Specialty":
-                newTag = new TagSpecialty(tag);
-                break;
-            case "Zone":
-                newTag = new TagZone(tag);
-                break;
-            default:
-                throw new IllegalArgumentException("Tipo di tag non valido: " + tagType);
-        }
+        Tag newTag = switch (tagType) {
+            case "Online" -> new TagIsOnline(tag);
+            case "UrgencyLevel" -> new TagUrgencyLevel(tag);
+            case "Specialty" -> new TagSpecialty(tag);
+            case "Zone" -> new TagZone(tag);
+            default -> throw new IllegalArgumentException("Tipo di tag non valido: " + tagType);
+        };
 
         this.tagDAO.addTag(newTag);
         logger.info("Creato nuovo tag: " + newTag.getTag() + " (Tipo: " + newTag.getTypeOfTag() + ")");

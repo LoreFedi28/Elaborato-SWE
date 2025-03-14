@@ -1,7 +1,5 @@
 package domainModel.Search;
 
-import java.util.Objects;
-
 public abstract class BaseDecoratorSearch implements Search {
 
     private final Search decoratedSearch;
