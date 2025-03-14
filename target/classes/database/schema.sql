@@ -20,7 +20,7 @@ CREATE TABLE patients
     cf          TEXT PRIMARY KEY,
     name        TEXT NOT NULL,
     surname     TEXT NOT NULL,
-    level       TEXT NOT NULL
+    urgencyLevel TEXT NOT NULL
 );
 
 -- Table: visits
@@ -28,14 +28,16 @@ CREATE TABLE visits
 (
     idVisit        SERIAL PRIMARY KEY,
     doctorCF       TEXT NOT NULL,
+    patientCF      TEXT,
     title          TEXT NOT NULL,
     description    TEXT,
-    startTime      TEXT NOT NULL,
-    endTime        TEXT NOT NULL,
+    startTime      TIMESTAMP NOT NULL,
+    endTime        TIMESTAMP NOT NULL,
     price          FLOAT NOT NULL CHECK(price >= 0),
     state          TEXT NOT NULL,
     stateExtraInfo TEXT,
-    FOREIGN KEY (doctorCF) REFERENCES doctors (cf) ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (doctorCF) REFERENCES doctors (cf) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (patientCF) REFERENCES patients (cf) ON UPDATE CASCADE ON DELETE SET NULL
 );
 
 -- Table: tags

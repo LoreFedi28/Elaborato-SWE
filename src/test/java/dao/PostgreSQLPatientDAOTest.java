@@ -1,15 +1,11 @@
 package dao;
 
-import domainModel.Patient;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 
 class PostgreSQLPatientDAOTest {
     private PostgreSQLPatientDAO patientDAO;

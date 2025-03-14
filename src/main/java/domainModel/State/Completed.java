@@ -7,17 +7,15 @@ public class Completed extends State {
     private final LocalDateTime completedTime;
 
     public Completed(LocalDateTime completedTime) {
-        this.state = "Completed";
+        super("Completed");
+        if (completedTime == null) {
+            throw new IllegalArgumentException("Completed time cannot be null.");
+        }
         this.completedTime = completedTime;
     }
 
     @Override
-    public String getState(){
-        return this.state;
-    }
-
-    @Override
-    public String getExtraInfo(){
+    public String getExtraInfo() {
         return this.completedTime.toString();
     }
 }

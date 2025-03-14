@@ -2,12 +2,18 @@ package domainModel.State;
 
 public abstract class State {
 
-    protected String state;
+    private final String state;
 
-    public String getState(){
+    protected State(String state) {
+        if (state == null || state.trim().isEmpty()) {
+            throw new IllegalArgumentException("State cannot be null or empty.");
+        }
+        this.state = state.trim();
+    }
+
+    public String getState() {
         return this.state;
     }
 
     public abstract String getExtraInfo();
-
 }

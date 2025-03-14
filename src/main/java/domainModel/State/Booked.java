@@ -2,16 +2,14 @@ package domainModel.State;
 
 public class Booked extends State {
 
-    private String patientCF;
+    private final String patientCF;
 
     public Booked(String patientCF) {
-        this.state = "Booked";
-        this.patientCF = patientCF;
-    }
-
-    @Override
-    public String getState() {
-        return this.state;
+        super("Booked");
+        if (patientCF == null || patientCF.trim().isEmpty()) {
+            throw new IllegalArgumentException("Patient CF cannot be null or empty.");
+        }
+        this.patientCF = patientCF.trim();
     }
 
     @Override

@@ -1,14 +1,13 @@
 package dao;
 
-import domainModel.Visit;
 import domainModel.State.*;
 import domainModel.Tags.*;
+import domainModel.Visit;
 
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class PostgreSQLVisitDAO implements VisitDAO {
 
@@ -18,213 +17,228 @@ public class PostgreSQLVisitDAO implements VisitDAO {
         this.tagDAO = tagDAO;
     }
 
-    private void setVisitState(ResultSet rs, Visit visit) throws Exception{
-        if(Objects.equals(rs.getString("state"), "Booked")){
-            String a = rs.getString("stateExtraInfo");
-            Booked booked = new Booked(a);
-            visit.setState(booked);
-        } else if(Objects.equals(rs.getString("state"), "Cancelled")){
-            LocalDateTime ldt = LocalDateTime.parse(rs.getString("stateExtraInfo"));
-            Cancelled cancelled = new Cancelled(ldt);
-            visit.setState(cancelled);
-        } else{
-            Available available = new Available();
-            visit.setState(available);
+    private void setVisitState(ResultSet rs, Visit visit) throws SQLException {
+        String state = rs.getString("state");
+        String extraInfo = rs.getString("stateExtraInfo");
+
+        switch (state) {
+            case "Booked":
+                visit.setState(new Booked(extraInfo));
+                break;
+            case "Cancelled":
+                visit.setState(new Cancelled(extraInfo != null ? LocalDateTime.parse(extraInfo) : LocalDateTime.now()));
+                break;
+            case "Completed":
+                visit.setState(new Completed(extraInfo != null ? LocalDateTime.parse(extraInfo) : LocalDateTime.now()));
+                break;
+            default:
+                visit.setState(new Available());
         }
     }
 
     @Override
-    public Visit get(Integer idVisit) throws Exception{
-        Connection conn = Database.getConnection();
-        Visit visit = null;
-        PreparedStatement ps = conn.prepareStatement("SELECT * FROM visits WHERE visitID = ?");
-        ps.setInt(1, idVisit);
-        ResultSet rs = ps.executeQuery();
+    public Visit get(Integer idVisit) throws SQLException {
+        String query = "SELECT * FROM visits WHERE idVisit = ?";
+        try (Connection conn = Database.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
 
-        if(rs.next()){
-            visit = new Visit(rs.getInt("idVisit"), rs.getString("title"), rs.getString("description"), LocalDateTime.parse(rs.getString("startTime")), LocalDateTime.parse(rs.getString("endTime")), rs.getDouble("price"), rs.getString("doctorCF"));
-            this.setVisitState(rs, visit);
-            List<Tag> visitTags = this.tagDAO.getTagsByVisit(visit.getIdVisit());
-            for(Tag tag : visitTags){
-                visit.addTag(tag);
+            ps.setInt(1, idVisit);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Visit visit = new Visit(
+                            rs.getInt("idVisit"),
+                            rs.getString("title"),
+                            rs.getString("description"),
+                            rs.getTimestamp("startTime").toLocalDateTime(),
+                            rs.getTimestamp("endTime").toLocalDateTime(),
+                            rs.getDouble("price"),
+                            rs.getString("doctorCF")
+                    );
+                    setVisitState(rs, visit);
+                    visit.getTags().addAll(tagDAO.getTagsByVisit(idVisit));
+                    return visit;
+                }
             }
         }
-        rs.close();
-        ps.close();
-        Database.closeConnection(conn);
-        return visit;
+        return null;
     }
 
     @Override
-    public List<Visit> getAll() throws Exception{
-        Connection conn = Database.getConnection();
+    public List<Visit> getAll() throws SQLException {
         List<Visit> visits = new ArrayList<>();
-        Statement statement = conn.createStatement();
-        ResultSet rs = statement.executeQuery("SELECT * FROM visits");
+        String query = "SELECT * FROM visits";
 
-        while(rs.next()){
-            Visit visit = new Visit(rs.getInt("idVisit"), rs.getString("title"), rs.getString("description"), LocalDateTime.parse(rs.getString("startTime")), LocalDateTime.parse(rs.getString("endTime")), rs.getDouble("price"), rs.getString("doctorCF"));
-            this.setVisitState(rs, visit);
-            List<Tag> visitTags = this.tagDAO.getTagsByVisit(visit.getIdVisit());
-            for(Tag tag : visitTags){
-                visit.addTag(tag);
+        try (Connection conn = Database.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                Visit visit = new Visit(
+                        rs.getInt("idVisit"),
+                        rs.getString("title"),
+                        rs.getString("description"),
+                        rs.getTimestamp("startTime").toLocalDateTime(),
+                        rs.getTimestamp("endTime").toLocalDateTime(),
+                        rs.getDouble("price"),
+                        rs.getString("doctorCF")
+                );
+                setVisitState(rs, visit);
+                visit.getTags().addAll(tagDAO.getTagsByVisit(visit.getIdVisit()));
+                visits.add(visit);
             }
-            visits.add(visit);
         }
-        rs.close();
-        statement.close();
-        Database.closeConnection(conn);
         return visits;
     }
 
     @Override
-    public void insert(Visit visit) throws Exception{
-        Connection conn = Database.getConnection();
-        PreparedStatement ps = conn.prepareStatement("INSERT INTO visits(title, description, startTime, endTime, price, doctorCF, state, stateExtraInfo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        ps.setString(1, visit.getTitle());
-        ps.setString(2, visit.getDescription());
-        ps.setString(3, visit.getStartTime().toString());
-        ps.setString(4, visit.getEndTime().toString());
-        ps.setDouble(5, visit.getPrice());
-        ps.setString(6, visit.getDoctorCF());
-        ps.setString(7, visit.getState());
-        ps.setString(8, visit.getStateExtraInfo());
+    public void insert(Visit visit) throws SQLException {
+        String query = "INSERT INTO visits (title, description, startTime, endTime, price, doctorCF, state, stateExtraInfo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-        ps.executeUpdate();
-        ps.close();
-        for(Tag tag: visit.getTags()){
-            if(this.tagDAO.getTag(tag.getTag(), tag.getTypeOfTag()) == null){
-                this.tagDAO.addTag(tag);
+        try (Connection conn = Database.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setString(1, visit.getTitle());
+            ps.setString(2, visit.getDescription());
+            ps.setTimestamp(3, Timestamp.valueOf(visit.getStartTime()));
+            ps.setTimestamp(4, Timestamp.valueOf(visit.getEndTime()));
+            ps.setDouble(5, visit.getPrice());
+            ps.setString(6, visit.getDoctorCF());
+            ps.setString(7, visit.getState());
+            ps.setString(8, visit.getStateExtraInfo());
+
+            ps.executeUpdate();
+        }
+    }
+
+    @Override
+    public void update(Visit visit) throws SQLException {
+        String query = "UPDATE visits SET title = ?, description = ?, startTime = ?, endTime = ?, price = ? WHERE idVisit = ?";
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setString(1, visit.getTitle());
+            ps.setString(2, visit.getDescription());
+            ps.setTimestamp(3, Timestamp.valueOf(visit.getStartTime()));
+            ps.setTimestamp(4, Timestamp.valueOf(visit.getEndTime()));
+            ps.setDouble(5, visit.getPrice());
+            ps.setInt(6, visit.getIdVisit());
+
+            ps.executeUpdate();
+        }
+    }
+
+    @Override
+    public boolean delete(Integer idVisit) throws SQLException {
+        String query = "DELETE FROM visits WHERE idVisit = ?";
+        try (Connection conn = Database.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setInt(1, idVisit);
+            return ps.executeUpdate() > 0;
+        }
+    }
+
+    @Override
+    public List<Visit> getDoctorVisitsByState(String doctorCF, State state) throws SQLException {
+        List<Visit> visits = new ArrayList<>();
+        String query = "SELECT * FROM visits WHERE doctorCF = ? AND state = ?";
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setString(1, doctorCF);
+            ps.setString(2, state.getState());
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    visits.add(get(rs.getInt("idVisit")));
+                }
             }
         }
-        Database.closeConnection(conn);
-    }
-
-    @Override
-    public void update(Visit visit) throws SQLException{
-        Connection conn = Database.getConnection();
-        PreparedStatement ps = conn.prepareStatement("UPDATE visits SET title = ?, description = ?, startTime = ?, endTime = ?, price = ? WHERE visitID = ?");
-        ps.setString(1, visit.getTitle());
-        ps.setString(2, visit.getDescription());
-        ps.setString(3, visit.getStartTime().toString());
-        ps.setString(4,visit.getEndTime().toString());
-        ps.setDouble(5, visit.getPrice());
-        ps.setInt(6, visit.getIdVisit());
-        ps.executeUpdate();
-        ps.close();
-        Database.closeConnection(conn);
-    }
-
-    @Override
-    public boolean delete(Integer idVisit) throws Exception{
-        Visit visit = get(idVisit);
-        if(visit == null){
-            return false;
-        }
-        Connection conn = Database.getConnection();
-        PreparedStatement ps = conn.prepareStatement("DELETE FROM visits WHERE visitID = ?");
-        ps.setInt(1, idVisit);
-        int rows = ps.executeUpdate();
-        ps.close();
-        Database.closeConnection(conn);
-        return rows > 0;
-    }
-
-    @Override
-    public List<Visit> getDoctorVisitsByState(String doctorCF, State state) throws Exception{
-        Connection conn = Database.getConnection();
-        PreparedStatement ps = conn.prepareStatement("SELECT * FROM visits WHERE doctorCF = ? AND state = ?");
-        ps.setString(1, doctorCF);
-        ps.setString(2, state.getState());
-        ResultSet rs = ps.executeQuery();
-
-        List<Visit> visits = new ArrayList<>();
-        while (rs.next()){
-            visits.add(this.get(rs.getInt("idVisit")));
-        }
-
-        rs.close();
-        ps.close();
-        Database.closeConnection(conn);
         return visits;
     }
 
     @Override
-    public List<Visit> getPatientBookedVisits(String patientCF) throws Exception{
-        Connection conn = Database.getConnection();
-        PreparedStatement ps = conn.prepareStatement("SELECT * FROM visits WHERE state = ? AND stateExtraInfo = ?");
-        ps.setString(1, "Booked");
-        ps.setString(2, patientCF);
-        ResultSet rs = ps.executeQuery();
-
+    public List<Visit> getPatientBookedVisits(String patientCF) throws SQLException {
         List<Visit> visits = new ArrayList<>();
-        while (rs.next()){
-            visits.add(this.get(rs.getInt("idVisit")));
-        }
+        String query = "SELECT * FROM visits WHERE state = 'Booked' AND stateExtraInfo = ?";
 
-        rs.close();
-        ps.close();
-        Database.closeConnection(conn);
+        try (Connection conn = Database.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setString(1, patientCF);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    visits.add(get(rs.getInt("idVisit")));
+                }
+            }
+        }
         return visits;
     }
 
     @Override
-    public int getNextVisitID() throws SQLException{
-        Connection conn = Database.getConnection();
-        PreparedStatement ps = conn.prepareStatement("SELECT seq FROM sqlite_sequence WHERE name = ?");
-        ps.setString(1, "visits");
-        ResultSet rs = ps.executeQuery();
-        int nextID = 1;
-        if(rs.next()){
-            nextID = rs.getInt("seq") + 1;
+    public int getNextVisitID() throws SQLException {
+        String query = "SELECT COALESCE(MAX(idVisit), 0) + 1 FROM visits";
+
+        try (Connection conn = Database.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
         }
-
-        rs.close();
-        ps.close();
-        Database.closeConnection(conn);
-        return nextID;
-    }
-
-    private int getLastVisitID() throws SQLException{
-        Connection conn = Database.getConnection();
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT MAX(visitID) FROM main.visits");
-        int id = rs.getInt(1);
-
-        rs.close();
-        stmt.close();
-        Database.closeConnection(conn);
-        return id;
+        return 1;
     }
 
     @Override
-    public void changeState(Integer idVisit, State newState) throws SQLException{
-        Connection conn = Database.getConnection();
-        PreparedStatement ps = conn.prepareStatement("UPDATE visits SET state = ?, stateExtraInfo = ? WHERE visitID = ?");
-        ps.setString(1, newState.getState());
-        ps.setString(2, newState.getExtraInfo());
-        ps.setInt(3, idVisit);
+    public void changeState(Integer idVisit, State newState) throws SQLException {
+        String query = "UPDATE visits SET state = ?, stateExtraInfo = ? WHERE idVisit = ?";
 
-        ps.executeUpdate();
+        try (Connection conn = Database.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
 
-        ps.close();
-        Database.closeConnection(conn);
+            ps.setString(1, newState.getState());
+            ps.setString(2, newState.getExtraInfo());
+            ps.setInt(3, idVisit);
+            ps.executeUpdate();
+        }
     }
 
-    public List<Visit> search(String query) throws Exception{
-        Connection conn = Database.getConnection();
-        PreparedStatement ps = conn.prepareStatement(query);
-        ResultSet rs = ps.executeQuery();
+    @Override
+    public int countDoctorVisitsByState(String doctorCF, State state) throws SQLException {
+        String query = "SELECT COUNT(*) FROM visits WHERE doctorCF = ? AND state = ?";
+        try (Connection conn = Database.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
 
+            ps.setString(1, doctorCF);
+            ps.setString(2, state.getState());
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public List<Visit> search(String query) throws SQLException {
         List<Visit> visits = new ArrayList<>();
 
-        while (rs.next()){
-            visits.add(this.get(rs.getInt("idVisit")));
-        }
+        // Debug: stampa la query per verificare eventuali errori di sintassi
+        System.out.println("Eseguo query di ricerca: " + query);
 
-        rs.close();
-        ps.close();
-        Database.closeConnection(conn);
+        try (Connection conn = Database.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                visits.add(get(rs.getInt("idVisit")));
+            }
+        }
         return visits;
     }
 }

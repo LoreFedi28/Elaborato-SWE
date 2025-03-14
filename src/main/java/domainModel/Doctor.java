@@ -1,30 +1,44 @@
 package domainModel;
 
-public class Doctor extends Person{
+import java.util.Objects;
 
+public class Doctor extends Person {
     private String iban;
 
-    public Doctor(String doctorCF, String name, String surname, String iban){
+    public Doctor(String doctorCF, String name, String surname, String iban) {
         super(doctorCF, name, surname);
-        this.iban = iban;
+        setIban(iban); // Usa il setter per validare il dato
     }
 
-    public String getIban(){
+    public String getIban() {
         return iban;
     }
 
-    public void setIban(String iban){
-        this.iban = iban;
+    public void setIban(String iban) {
+        if (iban == null || iban.trim().isEmpty()) {
+            throw new IllegalArgumentException("IBAN cannot be null or empty.");
+        }
+        this.iban = iban.trim();
     }
 
     @Override
-    public String toString(){
-        return "Doctor{" +
-                " codice fiscale =' " + getCF() + '\'' +
-                ", name = '" + getName() + '\'' +
-                ", surname = '" + getSurname() + '\'' +
-                ", iban = " + iban +
-                '}';
+    public String toString() {
+        return super.toString().replace("Person", "Doctor") + ", iban='" + iban + "'}";
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Doctor)) return false;
+        Doctor doctor = (Doctor) obj;
+        return Objects.equals(getCF(), doctor.getCF()) &&
+                Objects.equals(getName(), doctor.getName()) &&
+                Objects.equals(getSurname(), doctor.getSurname()) &&
+                Objects.equals(iban, doctor.iban);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getCF(), getName(), getSurname(), iban);
+    }
 }

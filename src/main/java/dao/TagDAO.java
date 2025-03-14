@@ -1,21 +1,37 @@
 package dao;
 
 import domainModel.Tags.*;
-
+import java.sql.SQLException;
 import java.util.List;
 
 public interface TagDAO {
-    public Tag getTag(String tag, String tagType) throws Exception;
 
-    public List<Tag> getAllTags() throws Exception;
+    // Recupera un tag specifico dato il nome e il tipo
+    Tag getTag(String tag, String tagType) throws SQLException;
 
-    public void addTag(Tag tag) throws Exception;
+    // Recupera tutti i tag presenti nel database
+    List<Tag> getAllTags() throws SQLException;
 
-    public void attachTag(Integer idVisit, Tag tagToAttach) throws Exception;
+    // Aggiunge un nuovo tag nel database
+    void addTag(Tag tag) throws SQLException;
 
-    public boolean removeTag(String tag, String tagType) throws Exception;
+    // Associa un tag a una visita
+    void attachTag(Integer idVisit, Tag tagToAttach) throws SQLException;
 
-    public boolean detachTag(Integer idVisit, Tag tagToDetach) throws Exception;
+    // Rimuove un tag dal database
+    boolean removeTag(String tag, String tagType) throws SQLException;
 
-    public List<Tag> getTagsByVisit(Integer idVisit) throws Exception;
+    // Disassocia un tag da una visita
+    boolean detachTag(Integer idVisit, Tag tagToDetach) throws SQLException;
+
+    // Recupera tutti i tag associati a una visita
+    List<Tag> getTagsByVisit(Integer idVisit) throws SQLException;
+
+    // Verifica se un tag esiste nel database
+    default boolean exists(String tag, String tagType) throws SQLException {
+        return getTag(tag, tagType) != null;
+    }
+
+    // Conta quanti tag sono associati a una determinata visita
+    int countTagsByVisit(Integer idVisit) throws SQLException;
 }

@@ -1,16 +1,21 @@
 package domainModel.Search;
 
-public class DecoratorSearchPrice extends BaseDecoratorSearch{
+import java.util.Locale;
+
+public class DecoratorSearchPrice extends BaseDecoratorSearch {
 
     private final double maxPrice;
 
     public DecoratorSearchPrice(Search decoratorSearch, double maxPrice) {
         super(decoratorSearch);
+        if (maxPrice < 0) {
+            throw new IllegalArgumentException("Max price cannot be negative.");
+        }
         this.maxPrice = maxPrice;
     }
 
     @Override
-    public String getSearchQuery(){
-        return super.getSearchQuery() + " AND price <= '" + maxPrice + "'";
+    public String getSearchQuery() {
+        return String.format(Locale.US, "%s AND price <= %.2f", super.getSearchQuery(), maxPrice);
     }
 }

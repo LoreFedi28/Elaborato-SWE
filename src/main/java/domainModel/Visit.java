@@ -3,9 +3,10 @@ package domainModel;
 import domainModel.State.*;
 import domainModel.Tags.Tag;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 
 public class Visit {
@@ -17,21 +18,30 @@ public class Visit {
     private double price;
     private final String doctorCF;
     private State state;
-    List<Tag> tags = new ArrayList<>();
+    private final List<Tag> tags = new ArrayList<>();
 
     public Visit(int idVisit, String title, String description, LocalDateTime startTime, LocalDateTime endTime, double price, String doctorCF) {
+        if (title == null || title.trim().isEmpty()) {
+            throw new IllegalArgumentException("Title cannot be null or empty.");
+        }
+        if (description == null || description.trim().isEmpty()) {
+            throw new IllegalArgumentException("Description cannot be null or empty.");
+        }
+        if (doctorCF == null || doctorCF.trim().isEmpty()) {
+            throw new IllegalArgumentException("Doctor CF cannot be null or empty.");
+        }
+        if (endTime.isBefore(startTime) || endTime.equals(startTime)) {
+            throw new IllegalArgumentException("End time must be after start time.");
+        }
+
         this.idVisit = idVisit;
-        this.title = title;
-        this.description = description;
+        this.title = title.trim();
+        this.description = description.trim();
         this.startTime = startTime;
         this.endTime = endTime;
         this.price = price;
-        this.doctorCF = doctorCF;
-
+        this.doctorCF = doctorCF.trim();
         this.state = new Available();
-
-        if (endTime.equals(startTime) || endTime.isBefore(startTime))
-            throw new IllegalArgumentException("endTime must be before startTime");
     }
 
     public int getIdVisit() { return idVisit; }
@@ -52,38 +62,51 @@ public class Visit {
 
     public String getStateExtraInfo() { return state.getExtraInfo(); }
 
-    public List<Tag> getTags() { return tags; }
+    public List<Tag> getTags() { return new ArrayList<>(tags); }
 
-    public void setState(State state) { this.state = state; }
+    public void setState(State state) {
+        if (state == null) {
+            throw new IllegalArgumentException("State cannot be null.");
+        }
+        this.state = state;
+    }
 
-    public void addTag(Tag newTag) { this.tags.add(newTag); }
+    public void addTag(Tag newTag) {
+        if (newTag == null) {
+            throw new IllegalArgumentException("Tag cannot be null.");
+        }
+        this.tags.add(newTag);
+    }
 
     public boolean removeTag(String tagType, String tag) {
-        if (!Objects.equals(tagType, "UrgencyLevel") && !Objects.equals(tagType, "Specialty") && !Objects.equals(tagType, "Zone") && !Objects.equals(tagType, "IsOnline")) {
+        if (!Objects.equals(tagType, "UrgencyLevel") &&
+                !Objects.equals(tagType, "Specialty") &&
+                !Objects.equals(tagType, "Zone") &&
+                !Objects.equals(tagType, "IsOnline")) {
             throw new IllegalArgumentException("Invalid tagType");
         }
+
         boolean removed = false;
-        for (Tag t : tags) {
-            if (Objects.equals(t.getTypeOfTag(), tagType) && Objects.equals(t.getTag(), tag)) {  // tag esempi: Firenze, Matematica, True, Elementari ecc...
-                this.tags.remove(t);
+        Iterator<Tag> iterator = tags.iterator();
+        while (iterator.hasNext()) {
+            Tag t = iterator.next();
+            if (Objects.equals(t.getTypeOfTag(), tagType) && Objects.equals(t.getTag(), tag)) {
+                iterator.remove();
                 removed = true;
             }
         }
-
         return removed;
     }
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        stringBuilder.append("Visit{");
-        stringBuilder.append("title='").append(getTitle()).append('\'');
-        stringBuilder.append(", description='").append(getDescription()).append('\'');
-        stringBuilder.append(", start time='").append(getStartTime().toString()).append('\'');
-        stringBuilder.append(", end time='").append(getEndTime().toString()).append('\'');
-        stringBuilder.append(", doctor='").append(getDoctorCF()).append('\'');
-        stringBuilder.append(", price='").append(getPrice()).append('\'');
+        StringBuilder stringBuilder = new StringBuilder("Visit{")
+                .append("title='").append(title).append("', ")
+                .append("description='").append(description).append("', ")
+                .append("startTime='").append(startTime).append("', ")
+                .append("endTime='").append(endTime).append("', ")
+                .append("doctor='").append(doctorCF).append("', ")
+                .append("price=").append(price);
 
         if (!tags.isEmpty()) {
             stringBuilder.append(", tags=[");
@@ -95,7 +118,27 @@ public class Visit {
         }
 
         stringBuilder.append('}');
-
         return stringBuilder.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Visit)) return false;
+        Visit visit = (Visit) obj;
+        return idVisit == visit.idVisit &&
+                Double.compare(visit.price, price) == 0 &&
+                Objects.equals(title, visit.title) &&
+                Objects.equals(description, visit.description) &&
+                Objects.equals(startTime, visit.startTime) &&
+                Objects.equals(endTime, visit.endTime) &&
+                Objects.equals(doctorCF, visit.doctorCF) &&
+                Objects.equals(state.getState(), visit.state.getState()) &&
+                Objects.equals(tags, visit.tags);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idVisit, title, description, startTime, endTime, price, doctorCF, state.getState(), tags);
     }
 }

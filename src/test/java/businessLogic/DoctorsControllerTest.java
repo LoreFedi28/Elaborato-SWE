@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.sql.*;
 import java.sql.SQLException;
+import java.util.Optional;
 
 class DoctorsControllerTest {
     private DoctorsController doctorsController;
@@ -20,8 +21,7 @@ class DoctorsControllerTest {
 
     @BeforeAll
     static void initDb() throws SQLException, IOException {
-        // Imposta il database di test PostgreSQL
-        Database.setDatabase("jdbc:postgresql://localhost:5432/testdb");
+        Database.setDatabase("jdbc:postgresql://localhost:5432/GestionaleTest");
         Database.initDatabase();
     }
 
@@ -47,8 +47,8 @@ class DoctorsControllerTest {
     @Test
     public void when_AddingNewDoctor_Expect_Success() throws Exception {
         Assertions.assertDoesNotThrow(() -> doctorsController.addPerson("DOCTORCF456", "NewDoctorName", "NewDoctorSurname", "NewDoctorUrgencyLevel"));
-        Doctor addedDoctor = doctorsController.getPerson("DOCTORCF456");
-        Assertions.assertEquals("DOCTORCF456", addedDoctor.getCF());
+        Optional<Doctor> addedDoctor = doctorsController.getPerson("DOCTORCF456");
+        Assertions.assertEquals("DOCTORCF456", addedDoctor.get().getCF());
     }
 
     @Test
@@ -62,13 +62,13 @@ class DoctorsControllerTest {
 
     @Test
     public void when_GettingExistingDoctor_Expect_ReturnDoctor() throws Exception {
-        Doctor retrievedDoctor = doctorsController.getPerson("DOCTORCF123");
+        Optional<Doctor> retrievedDoctor = doctorsController.getPerson("DOCTORCF123");
         Assertions.assertEquals(testDoctor, retrievedDoctor);
     }
 
     @Test
     public void when_GettingNonExistingDoctor_Expect_ReturnNull() throws Exception {
-        Doctor nonExistingDoctor = doctorsController.getPerson("DOCTORCF999");
+        Optional<Doctor> nonExistingDoctor = doctorsController.getPerson("DOCTORCF999");
         Assertions.assertNull(nonExistingDoctor);
     }
 

@@ -1,15 +1,13 @@
 package domainModel.State;
 
-public class Available extends State{
+public class Available extends State {
 
-    public Available(){
-        this.state = "Available";
+    public Available() {
+        super("Available");
     }
 
     @Override
-    public String getExtraInfo(){
+    public String getExtraInfo() {
         return null;
     }
-
-
 }

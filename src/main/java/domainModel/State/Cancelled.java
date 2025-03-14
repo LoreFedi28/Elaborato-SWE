@@ -7,13 +7,11 @@ public class Cancelled extends State {
     private final LocalDateTime cancelledTime;
 
     public Cancelled(LocalDateTime cancelledTime) {
-        this.state = "Cancelled";
+        super("Cancelled");
+        if (cancelledTime == null) {
+            throw new IllegalArgumentException("Cancelled time cannot be null.");
+        }
         this.cancelledTime = cancelledTime;
-    }
-
-    @Override
-    public String getState() {
-        return this.state;
     }
 
     @Override
