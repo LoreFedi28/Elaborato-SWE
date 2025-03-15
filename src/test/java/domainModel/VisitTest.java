@@ -54,7 +54,6 @@ public class VisitTest {
         visit.addTag(tagSpecialty);
         Assertions.assertTrue(visit.getTags().contains(tagZone));
 
-        // Usa il tagType corretto ("Zone" invece di "Zona")
         visit.removeTag("Zone", "Firenze");
         Assertions.assertFalse(visit.getTags().contains(tagZone));
 

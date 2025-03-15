@@ -43,16 +43,22 @@ public class VisitsController {
             }
         }
 
-        Visit v = new Visit(visitDAO.getNextVisitID(), title, description, startTime, endTime, price, doctorCF);
-        for (Tag t : tags) {
-            v.addTag(t);
-        }
+        int visitId = visitDAO.getNextVisitID();
+        Visit v = new Visit(visitId, title, description, startTime, endTime, price, doctorCF);
         visitDAO.insert(v);
-        return v.getIdVisit();
+
+        // 🔹 Attacca i tag alla visita (salvando nel database)
+        for (Tag t : tags) {
+            System.out.println("DEBUG: Attaccando tag " + t.getTag() + " alla visita " + visitId);
+            attachTag(visitId, t);
+        }
+
+        return visitId;
     }
 
     public void updateVisit(int idVisit, String newTitle, String newDescription, LocalDateTime newStartTime, LocalDateTime newEndTime, double newPrice, String doctorCF) throws Exception {
-        if (this.visitDAO.get(idVisit) == null) throw new IllegalArgumentException("Non è possibile modificare una visita che non esiste.");
+        if (this.visitDAO.get(idVisit) == null)
+            throw new IllegalArgumentException("Non è possibile modificare una visita che non esiste.");
 
         Visit v = new Visit(idVisit, newTitle, newDescription, newStartTime, newEndTime, newPrice, doctorCF);
         this.visitDAO.update(v);
@@ -75,10 +81,27 @@ public class VisitsController {
     }
 
     public void attachTag(int idVisit, Tag tagToAttach) throws Exception {
-        if (this.tagDAO.getTag(tagToAttach.getTag(), tagToAttach.getTypeOfTag()) != null) {
-            this.tagDAO.attachTag(idVisit, tagToAttach);
-        } else
-            throw new IllegalArgumentException("Questo tag non esiste");
+        System.out.println("DEBUG: Tentativo di attaccare il tag '" + tagToAttach.getTag() + "' di tipo '" + tagToAttach.getTypeOfTag() + "' alla visita con ID " + idVisit);
+
+        // Controlla se il tag è già associato alla visita
+        List<Tag> existingTags = this.tagDAO.getTagsByVisit(idVisit);
+        for (Tag existingTag : existingTags) {
+            if (existingTag.getTag().equals(tagToAttach.getTag()) && existingTag.getTypeOfTag().equals(tagToAttach.getTypeOfTag())) {
+                System.out.println("DEBUG: Il tag '" + tagToAttach.getTag() + "' è già associato alla visita con ID " + idVisit + ". Nessuna azione necessaria.");
+                return;  // Esce senza aggiungere un duplicato
+            }
+        }
+
+        // Controlla se il tag esiste nel database, altrimenti lo crea
+        Tag existingTag = this.tagDAO.getTag(tagToAttach.getTag(), tagToAttach.getTypeOfTag());
+        if (existingTag == null) {
+            System.out.println("DEBUG: Il tag '" + tagToAttach.getTag() + "' non esiste. Lo creo ora...");
+            this.tagDAO.addTag(tagToAttach);
+        }
+
+        // Ora il tag esiste ed è nuovo per la visita, quindi può essere associato
+        this.tagDAO.attachTag(idVisit, tagToAttach);
+        System.out.println("DEBUG: Tag '" + tagToAttach.getTag() + "' attaccato con successo alla visita con ID " + idVisit);
     }
 
     public boolean detachTag(int idVisit, Tag tagToDetach) throws Exception {

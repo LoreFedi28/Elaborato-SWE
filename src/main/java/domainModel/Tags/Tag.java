@@ -2,7 +2,7 @@ package domainModel.Tags;
 
 import java.util.Objects;
 
-public abstract class Tag {
+public class Tag {
     protected final String tag;
     protected final String typeOfTag;
 

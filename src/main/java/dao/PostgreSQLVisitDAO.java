@@ -136,12 +136,31 @@ public class PostgreSQLVisitDAO implements VisitDAO {
 
     @Override
     public boolean delete(Integer idVisit) throws SQLException {
-        String query = "DELETE FROM visits WHERE idVisit = ?";
-        try (Connection conn = Database.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+        System.out.println("DEBUG: Tentativo di eliminare la visita con ID " + idVisit);
 
-            ps.setInt(1, idVisit);
-            return ps.executeUpdate() > 0;
+        try (Connection conn = Database.getConnection()) {
+            conn.setAutoCommit(false);
+
+            // Rimuoviamo prima i tag associati
+            String deleteTagsQuery = "DELETE FROM visitsTags WHERE idVisit = ?";
+            try (PreparedStatement psTags = conn.prepareStatement(deleteTagsQuery)) {
+                psTags.setInt(1, idVisit);
+                psTags.executeUpdate();
+            }
+
+            // Ora eliminiamo la visita
+            String query = "DELETE FROM visits WHERE idVisit = ?";
+            try (PreparedStatement ps = conn.prepareStatement(query)) {
+                ps.setInt(1, idVisit);
+                boolean deleted = ps.executeUpdate() > 0;
+                System.out.println("DEBUG: Eliminazione riuscita? " + deleted);
+
+                conn.commit();
+                return deleted;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
