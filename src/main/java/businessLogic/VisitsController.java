@@ -47,7 +47,7 @@ public class VisitsController {
         Visit v = new Visit(visitId, title, description, startTime, endTime, price, doctorCF);
         visitDAO.insert(v);
 
-        // 🔹 Attacca i tag alla visita (salvando nel database)
+        // Attacca i tag alla visita (salvando nel database)
         for (Tag t : tags) {
             System.out.println("DEBUG: Attaccando tag " + t.getTag() + " alla visita " + visitId);
             attachTag(visitId, t);
@@ -78,6 +78,15 @@ public class VisitsController {
 
     public List<Visit> getDoctorVisitByState(String doctorCF, State state) throws Exception {
         return visitDAO.getDoctorVisitsByState(doctorCF, state);
+    }
+
+    public void changeState(int visitId, State newState) throws Exception {
+        Visit visit = visitDAO.get(visitId);
+        if (visit == null) {
+            throw new IllegalArgumentException("La visita con ID " + visitId + " non esiste.");
+        }
+
+        visitDAO.changeState(visitId, newState);
     }
 
     public void attachTag(int idVisit, Tag tagToAttach) throws Exception {

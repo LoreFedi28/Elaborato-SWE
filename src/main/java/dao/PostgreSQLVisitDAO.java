@@ -266,4 +266,18 @@ public class PostgreSQLVisitDAO implements VisitDAO {
         }
         return visits;
     }
+
+    @Override
+    public void changeState(int visitId, State newState) throws SQLException {
+        String query = "UPDATE visits SET state = ?, stateExtraInfo = ? WHERE idVisit = ?";
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setString(1, newState.getState());
+            ps.setString(2, newState.getExtraInfo());
+            ps.setInt(3, visitId);
+            ps.executeUpdate();
+        }
+    }
 }

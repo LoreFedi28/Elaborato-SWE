@@ -23,6 +23,7 @@ public interface VisitDAO extends DAO<Visit, Integer> {
     void changeState(Integer idVisit, State newState) throws SQLException;
 
     // Cerca visite in base a una query dinamica
-    // ⚠️ ATTENZIONE: Se usata in modo improprio, potrebbe portare a SQL Injection.
     List<Visit> search(String query) throws SQLException;
+
+    void changeState(int visitId, State newState) throws SQLException;
 }
