@@ -119,7 +119,7 @@ I test verificano il corretto funzionamento di:
 
 ---
 
-## ** Differenza tra Test Unitari e Funzionali**
+## **Differenza tra Test Unitari e Funzionali**
 - **Test Unitari** → Verificano il funzionamento di singole unità di codice (es. `VisitsController` o `PostgreSQLVisitDAO`).
 - **Test Funzionali** → Simulano scenari reali e l'interazione tra più componenti (es. un paziente prenota una visita e poi la cancella).
 
