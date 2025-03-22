@@ -8,11 +8,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 class PostgreSQLPatientDAOTest {
-    private PostgreSQLPatientDAO patientDAO;
 
     @BeforeAll
     static void initDb() throws SQLException, IOException {
-        // Set up the test database
         Database.setDatabase("jdbc:postgresql://localhost:5432/GestionaleVisiteMediche_test");
         Database.initDatabase(true);
     }
@@ -20,7 +18,7 @@ class PostgreSQLPatientDAOTest {
     @BeforeEach
     public void init() throws SQLException {
         try (Connection connection = Database.getConnection()) {
-            patientDAO = new PostgreSQLPatientDAO();
+            PostgreSQLPatientDAO patientDAO = new PostgreSQLPatientDAO();
             connection.prepareStatement("DELETE FROM patients CASCADE;").executeUpdate();
             connection.prepareStatement("INSERT INTO patients (cf, name, surname, urgencyLevel) VALUES ('test1', 'name1', 'surname1', 'urgencyLevel1')").executeUpdate();
             connection.prepareStatement("INSERT INTO patients (cf, name, surname, urgencyLevel) VALUES ('test2', 'name2', 'surname2', 'urgencyLevel2')").executeUpdate();

@@ -14,7 +14,7 @@ CREATE TABLE doctors
     iban VARCHAR(50) NOT NULL
 );
 
--- (Opzionale) Creazione di una sequenza per i medici, se serve in altri contesti
+-- Creazione di una sequenza per i medici
 CREATE SEQUENCE IF NOT EXISTS doctors_id_seq
     START WITH 1
     INCREMENT BY 1;

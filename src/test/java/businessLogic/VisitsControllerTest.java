@@ -132,7 +132,6 @@ class VisitsControllerTest {
         Assertions.assertEquals(55.0, updatedVisit.getPrice());
     }
 
-
     @Test
     void testDeleteVisit() throws Exception {
         List<Visit> visits = visitsController.getAll();
